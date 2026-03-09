@@ -1,0 +1,53 @@
+id: sample-course
+title: "Python Basics (Sample)"
+description: "A sample Learning OS course demonstrating the standard structure. Delete this and create your own courses."
+track: sample
+type: programming
+language: python
+
+learning_plan: LEARNING_PLAN.md
+exercises: EXERCISES.md
+
+chapters:
+  - id: data-types
+    title: "Data Types & Variables"
+    topics:
+      - "int, float, str, bool"
+      - "Variables and assignment"
+      - "Type conversion (int(), str(), float())"
+    exercises_section: "data-types"
+
+  - id: control-flow
+    title: "Control Flow"
+    topics:
+      - "if / elif / else"
+      - "for loops"
+      - "while loops"
+      - "break and continue"
+    exercises_section: "control-flow"
+
+  - id: functions
+    title: "Functions"
+    topics:
+      - "def and return"
+      - "Parameters and arguments"
+      - "Default parameters"
+      - "Docstrings"
+    exercises_section: "functions"
+    large_chapter: false
+
+progress:
+  track_name: sample
+  section_mapping:
+    data-types: "Data Types"
+    control-flow: "Control Flow"
+    functions: "Functions"
+
+build:
+  tool: python
+  run_demo: "python {file}"
+
+prerequisites:
+  - "No prerequisites — this is the starting point"
+
+next_course: null

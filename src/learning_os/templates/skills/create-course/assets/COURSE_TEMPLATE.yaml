@@ -1,0 +1,59 @@
+# Canonical COURSE.yaml Template
+#
+# Copy this template and fill in the values for your course.
+# See the learn skill's references/COURSE_SCHEMA.md for full field documentation.
+
+id: course-id                  # kebab-case, must match directory name
+title: "Course Title"
+description: "A one to two sentence description of what this course covers and who it's for."
+track: track-name              # short identifier for progress tracking (e.g. python, react)
+type: programming              # programming | conceptual | mixed
+
+# Content files (relative to this course directory)
+learning_plan: LEARNING_PLAN.md
+# exercises: EXERCISES.md      # uncomment for programming/mixed courses
+
+# Chapters — always use 'chapters', never 'modules'
+chapters:
+  - id: chapter-one
+    title: "Chapter One Title"
+    topics:
+      - "Topic A"
+      - "Topic B"
+      - "Topic C"
+    exercises_section: "chapter-one"   # heading in EXERCISES.md (if applicable)
+    # large_chapter: true              # uncomment if 6+ topics (triggers split offer)
+    # content_file: "CHAPTER_ONE.md"  # uncomment if this chapter has a dedicated file
+    # demos:                           # uncomment for programming courses
+    #   - src/main/java/com/example/ChapterOneDemo.java
+
+  - id: chapter-two
+    title: "Chapter Two Title"
+    topics:
+      - "Topic D"
+      - "Topic E"
+    exercises_section: "chapter-two"
+
+  # Add more chapters as needed...
+
+# Progress tracking — must be consistent with 'track' above
+progress:
+  track_name: track-name       # same as 'track' field above
+  section_mapping:
+    chapter-one: "Chapter One"
+    chapter-two: "Chapter Two"
+    # Add one entry per chapter above
+
+# Build configuration — for programming courses only
+# build:
+#   tool: maven                # maven | npm | cargo | python | go | etc.
+#   compile: "mvn clean compile"
+#   run_demo: "mvn exec:java -q -Dexec.mainClass=\"{class}\""
+
+# Prerequisites — what should the learner know before starting?
+# prerequisites:
+#   - "Basic understanding of X"
+#   - "Y installed (version Z or higher)"
+
+# Optional: suggest what to learn after completing this course
+# next_course: other-course-id
