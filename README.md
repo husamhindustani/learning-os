@@ -58,7 +58,7 @@ Learning OS installs six **Agent Skills** into your workspace. Skills are discov
 6. Repeat
 ```
 
-Progress is saved to `.learning-progress` and `notes/session-notes.md` in your workspace — version-controlled, readable, yours.
+Progress is saved to `.learning-progress` and `notes/session-notes.md` in your workspace — readable, yours, and version-controlled if you choose to commit them.
 
 ---
 
@@ -67,7 +67,7 @@ Progress is saved to `.learning-progress` and `notes/session-notes.md` in your w
 ```
 your-workspace/
 ├── .cursor/                        ← Cursor-specific (cursor, both)
-│   ├── skills/                     ← 6 Agent Skills
+│   ├── skills/                     ← 6 Agent Skills (or symlinks when --tool both)
 │   │   ├── onboarding/
 │   │   ├── learn/
 │   │   ├── chapter-check/
@@ -79,14 +79,16 @@ your-workspace/
 │   └── hooks/
 │       └── hooks.json              ← Wires sessionEnd only
 ├── .claude/                        ← Claude Code-specific (claude, both)
-│   ├── skills/                     ← Same 6 skills (identical content)
+│   ├── skills/                     ← Same 6 skills (or symlinks when --tool both)
 │   ├── rules/
 │   │   └── learning-mode.md        ← Same rule body (paths: courses/**)
 │   └── settings.json               ← Wires SessionEnd only
 ├── CLAUDE.md                       ← Always-on context for Claude Code
 ├── .learning-os/
-│   └── hooks/
-│       └── session-end.sh          ← Session breadcrumb safety net
+│   ├── skills/                     ← Canonical skills (--tool both only)
+│   ├── hooks/
+│   │   └── session_end.py          ← Cross-platform session breadcrumb script
+│   └── version                     ← Engine version stamp
 ├── courses/                        ← your content (never touched by upgrades)
 │   └── REGISTRY.md
 ├── notes/                          ← your session journal
@@ -94,6 +96,8 @@ your-workspace/
 ```
 
 Your `courses/`, `notes/`, and `.learning-progress` are **never touched** by upgrades — they belong to you.
+
+When you use `--tool both`, skills are stored once in `.learning-os/skills/` and symlinked into `.cursor/skills/` and `.claude/skills/` to avoid duplication.
 
 ---
 
@@ -106,10 +110,10 @@ Both Cursor and Claude Code are fully supported. All features work on both.
 | Skills | `.cursor/skills/` | `.claude/skills/` |
 | Always-on context | `.cursor/rules/learning-mode.mdc` | `CLAUDE.md` + `.claude/rules/learning-mode.md` |
 | Session-end hook | `.cursor/hooks/hooks.json` → `sessionEnd` | `.claude/settings.json` → `SessionEnd` |
-| Hook script | `.learning-os/hooks/session-end.sh` (shared) | `.learning-os/hooks/session-end.sh` (shared) |
+| Hook script | `.learning-os/hooks/session_end.py` (shared, cross-platform) | `.learning-os/hooks/session_end.py` (shared, cross-platform) |
 | Progress tracking | `save-progress` skill writes `.learning-progress` directly | same |
 
-The `session-end.sh` hook is a safety net only — if you close the AI tool without running `save-progress`, it writes a breadcrumb entry to `notes/session-notes.md`. Progress tracking itself is handled entirely by the skill. When you choose `--tool both`, skills are installed in both `.cursor/` and `.claude/`, and both tools' configs are written.
+The `session_end.py` hook is a safety net only — if you close the AI tool without running `save-progress`, it writes a breadcrumb entry to `notes/session-notes.md`. Progress tracking itself is handled entirely by the skill. When you choose `--tool both`, skills are installed in both `.cursor/` and `.claude/`, and both tools' configs are written.
 
 When you run `learning-os init`, you're asked which tool you use. Choose `both` to configure for both.
 
@@ -139,6 +143,20 @@ progress:
 
 The `create-course` skill scaffolds the full structure for you — just describe what you want to learn.
 
+### Sharing courses
+
+Export a course to share it:
+
+```bash
+learning-os export python-basics -o python-basics.zip
+```
+
+Import a course from someone else:
+
+```bash
+learning-os import python-basics.zip
+```
+
 ---
 
 ## Upgrade
@@ -151,7 +169,7 @@ learning-os upgrade
 learning-os upgrade ~/my-learning
 ```
 
-Upgrades never touch your `courses/`, `notes/`, or `.learning-progress`.
+Upgrades never touch your `courses/`, `notes/`, or `.learning-progress`. The upgrade shows which version you're upgrading from and to.
 
 ---
 
@@ -163,6 +181,29 @@ learning-os init [directory]        Scaffold a new workspace
   --tool [cursor|claude|both]       AI tool to configure for
 
 learning-os upgrade [directory]     Upgrade engine, preserve content
+
+learning-os validate [directory]    Validate workspace and COURSE.yaml files
+
+learning-os list [directory]        List courses and show progress
+
+learning-os export <course-id>      Export a course as a .zip file
+  --dir <workspace>                 Workspace directory (default: current)
+  -o, --output <path>               Output file path
+
+learning-os import <archive>        Import a course from a .zip file
+  --dir <workspace>                 Workspace directory (default: current)
+```
+
+---
+
+## Development
+
+```bash
+# Install in development mode with test dependencies
+pip install -e ".[dev]"
+
+# Run tests
+pytest tests/ -v
 ```
 
 ---

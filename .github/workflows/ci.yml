@@ -27,11 +27,39 @@ jobs:
       - name: Run tests
         run: pytest tests/ -v
 
-      - name: Test scaffold (smoke test)
+      - name: Smoke test — init cursor
         run: |
-          mkdir /tmp/test-workspace
-          learning-os init /tmp/test-workspace --tool cursor
-          ls /tmp/test-workspace/.cursor/skills/
-          ls /tmp/test-workspace/.cursor/hooks/
-          ls /tmp/test-workspace/.learning-os/hooks/
-          ls /tmp/test-workspace/courses/
+          mkdir /tmp/test-cursor
+          learning-os init /tmp/test-cursor --tool cursor
+          ls /tmp/test-cursor/.cursor/skills/
+          ls /tmp/test-cursor/.cursor/hooks/
+          ls /tmp/test-cursor/.learning-os/hooks/session_end.py
+          ls /tmp/test-cursor/.learning-os/version
+          ls /tmp/test-cursor/courses/
+
+      - name: Smoke test — init both (symlinks)
+        run: |
+          mkdir /tmp/test-both
+          learning-os init /tmp/test-both --tool both --with-sample
+          test -L /tmp/test-both/.cursor/skills/learn || echo "Not a symlink (Windows fallback)"
+          ls /tmp/test-both/.learning-os/skills/learn/SKILL.md
+
+      - name: Smoke test — validate
+        run: |
+          learning-os validate /tmp/test-both
+
+      - name: Smoke test — list
+        run: |
+          learning-os list /tmp/test-both
+
+      - name: Smoke test — export and import
+        run: |
+          learning-os export sample-course --dir /tmp/test-both -o /tmp/sample.zip
+          mkdir /tmp/test-import
+          learning-os init /tmp/test-import --tool cursor
+          learning-os import /tmp/sample.zip --dir /tmp/test-import
+          ls /tmp/test-import/courses/sample-course/COURSE.yaml
+
+      - name: Smoke test — upgrade
+        run: |
+          learning-os upgrade /tmp/test-cursor

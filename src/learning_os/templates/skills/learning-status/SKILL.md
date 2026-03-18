@@ -14,16 +14,34 @@ Show an overview of all courses and the user's progress.
 
 ### 1. Read progress data
 
-- Read `.learning-progress` for current track positions and timestamps
+- Read `.learning-progress` (JSON format) for per-track completion data
 - Read `courses/REGISTRY.md` for the list of courses
+
+**`.learning-progress` format:**
+```json
+{
+  "tracks": {
+    "[track-name]": {
+      "completed": ["chapter-id-1", "chapter-id-2"],
+      "last_saved": "chapter-id-2",
+      "last_date": "YYYY-MM-DD HH:MM"
+    }
+  }
+}
+```
+
+- `completed` — all chapter IDs the user has saved progress for (the authoritative completion list)
+- `last_saved` — most recently saved chapter
+- `last_date` — timestamp of last save
+
 
 ### 2. For each course in REGISTRY.md
 
 - Read `courses/[course-id]/COURSE.yaml`
-- Find the last completed chapter: match `TRACK_[track]` value from `.learning-progress` against the chapter `id` fields in `chapters`
-- **Important:** the stored chapter-id is the LAST COMPLETED chapter — the user has finished it and should move to the NEXT one
-- Calculate progress: count chapters up to and including the last completed one
-- Find next chapter: the chapter immediately after the last completed one in the `chapters` array
+- Get the track name from the `track` field (or `progress.track_name` if set)
+- Look up `tracks.[track-name]` in the progress data
+- **Progress:** count how many chapter `id` values from `chapters` appear in `completed`
+- **Next up:** the first chapter whose `id` is NOT in `completed`
 
 ### 3. Display format
 

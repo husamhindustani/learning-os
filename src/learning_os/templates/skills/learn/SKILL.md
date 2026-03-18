@@ -28,9 +28,9 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 - Look at recently referenced files (e.g., files in `courses/java-evolution/`)
 
 **From progress file:**
-- Read `.learning-progress`
-- Find the most recently updated track
-- Suggest resuming or starting the next chapter
+- Read `.learning-progress` (JSON: `tracks.[track-name].last_saved` and `completed`)
+- Find the track with the most recent `last_date`
+- `last_saved` is the last completed chapter — suggest the next chapter not in `completed`
 
 **If still unclear:**
 - Read `courses/REGISTRY.md` and list available courses
