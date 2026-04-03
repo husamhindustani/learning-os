@@ -38,7 +38,7 @@ books/                ← imported books (created by learning-os add-book)
     book-content/     ← chapter text as markdown (read by learn skill)
 notes/
   session-notes.md    ← learning journal (append-only, newest entry at top)
-.learning-progress    ← key-value progress snapshot (written by save-progress skill)
+.learning-progress    ← JSON progress file (written by save-progress skill)
 .learning-os/
   hooks/              ← shared automation scripts (session breadcrumb only)
 ```

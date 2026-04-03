@@ -316,7 +316,7 @@ def _copy_tree(src: Path, dest: Path, console: Console, label: str):
 def _ensure_gitignore(target: Path, console: Console):
     """Add Learning OS entries to .gitignore if not already present."""
     gitignore = target / ".gitignore"
-    entries = ["*.pyc", "__pycache__/"]
+    entries = ["*.pyc", "__pycache__/", "books/"]
     existing = gitignore.read_text() if gitignore.exists() else ""
 
     if _GITIGNORE_MARKER in existing:

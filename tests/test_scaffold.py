@@ -164,7 +164,7 @@ def test_gitignore_does_not_include_learning_progress(tmp_workspace, quiet_conso
 
 def test_gitignore_respects_existing_entries(tmp_workspace, quiet_console):
     gitignore = tmp_workspace / ".gitignore"
-    gitignore.write_text("*.pyc\n__pycache__/\n")
+    gitignore.write_text("*.pyc\n__pycache__/\nbooks/\n")
 
     _ensure_gitignore(tmp_workspace, quiet_console)
     content = gitignore.read_text()

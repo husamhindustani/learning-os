@@ -1,5 +1,7 @@
 """Learning OS CLI — entry point for all commands."""
 
+import re
+
 import click
 from rich.console import Console
 from rich.panel import Panel
@@ -198,7 +200,7 @@ def add_book(file_path, directory):
 
     target = P(directory).resolve()
     book_slug = source.stem.lower()
-    book_slug = __import__("re").sub(r"[^a-z0-9]+", "-", book_slug).strip("-")
+    book_slug = re.sub(r"[^a-z0-9]+", "-", book_slug).strip("-")
     book_dir = target / "books" / book_slug
 
     if book_dir.exists():
