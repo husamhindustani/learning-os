@@ -4,13 +4,14 @@ This is a Learning OS workspace — an AI-native learning environment for any to
 
 ## What this workspace is
 
-Learning OS provides a structured, self-improving learning system. You have six Agent Skills available that handle all learning interactions:
+Learning OS provides a structured, self-improving learning system. You have seven Agent Skills available that handle all learning interactions:
 
 - **onboarding** — activates automatically on first use or when no courses exist
 - **learn** — teaches chapter content one concept at a time
 - **chapter-check** — quizzes after a chapter (current session or historical review)
 - **save-progress** — saves session notes and updates progress tracking
 - **create-course** — scaffolds a new course for any topic
+- **create-course-from-book** — creates a course from an imported PDF/EPUB book
 - **learning-status** — shows progress across all courses
 
 ## How to behave
@@ -31,6 +32,10 @@ courses/              ← user's learning content (never modify without instruct
     COURSE.yaml       ← course definition (schema in learn skill references)
     LEARNING_PLAN.md
     EXERCISES.md
+books/                ← imported books (created by learning-os add-book)
+  [slug]/
+    book-outline.yaml ← extracted TOC and chapter list
+    book-content/     ← chapter text as markdown (read by learn skill)
 notes/
   session-notes.md    ← learning journal (append-only, newest entry at top)
 .learning-progress    ← key-value progress snapshot (written by save-progress skill)

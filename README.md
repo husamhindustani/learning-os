@@ -14,6 +14,12 @@ pipx install learning-os
 
 > Requires Python 3.9+. Install `pipx` with `pip install pipx` if needed.
 
+To create courses from PDF/EPUB books, install with book parsing support:
+
+```bash
+pipx install 'learning-os[book]'
+```
+
 ---
 
 ## Quick Start
@@ -36,7 +42,7 @@ Then open the directory in Cursor (or your AI tool) and start a new chat. The on
 
 ## How it works
 
-Learning OS installs six **Agent Skills** into your workspace. Skills are discovered automatically by the AI — no slash commands needed.
+Learning OS installs seven **Agent Skills** into your workspace. Skills are discovered automatically by the AI — no slash commands needed.
 
 | Skill | Activates when you say... |
 |---|---|
@@ -45,12 +51,15 @@ Learning OS installs six **Agent Skills** into your workspace. Skills are discov
 | `chapter-check` | "quiz me", "test my understanding", "review [chapter]" |
 | `save-progress` | "save my progress", "I'm done for today" |
 | `create-course` | "create a course on X", "I want to learn Y" |
+| `create-course-from-book` | "create a course from this book", "create a course from \<slug\>" |
 | `learning-status` | "where am I?", "show my progress", "what's next?" |
 
 ### The workflow
 
 ```
 1. Create a course   →  "create a course on Python basics"
+                        or from a book: learning-os add-book <file>
+                        then "create a course from <slug>"
 2. Learn a chapter   →  "teach me python-basics data-types"
 3. Do exercises      →  shown inline after teaching
 4. Quiz yourself     →  "quiz me"
@@ -67,13 +76,13 @@ Progress is saved to `.learning-progress` (JSON — tracks all completed chapter
 ```
 your-workspace/
 ├── .cursor/                        ← Cursor-specific (cursor, both)
-│   ├── skills/                     ← 6 Agent Skills (or symlinks when --tool both)
+│   ├── skills/                     ← 7 Agent Skills (or symlinks when --tool both)
 │   ├── rules/
 │   │   └── learning-mode.mdc       ← Pedagogical rule (globs: courses/**)
 │   └── hooks/
 │       └── hooks.json              ← Wires sessionEnd only
 ├── .claude/                        ← Claude Code-specific (claude, both)
-│   ├── skills/                     ← Same 6 skills (or symlinks when --tool both)
+│   ├── skills/                     ← Same 7 skills (or symlinks when --tool both)
 │   ├── rules/
 │   │   └── learning-mode.md        ← Same rule body (paths: courses/**)
 │   └── settings.json               ← Wires SessionEnd only
@@ -87,6 +96,11 @@ your-workspace/
 │   └── version                     ← Engine version stamp
 ├── courses/                        ← your content (never touched by upgrades)
 │   └── REGISTRY.md
+├── books/                          ← imported books (created by add-book command)
+│   └── <slug>/
+│       ├── <original>.pdf
+│       ├── book-outline.yaml
+│       └── book-content/           ← extracted chapter text as markdown
 ├── notes/                          ← your session journal
 └── .learning-progress              ← JSON progress file (written by save-progress skill)
 ```
@@ -141,6 +155,20 @@ progress:
 
 The `create-course` skill handles this interactively — describe what you want to learn, answer a few targeted questions, and the agent proposes a full chapter outline for your approval before writing any files.
 
+### Courses from books
+
+Import a PDF or EPUB, then create a course from it:
+
+```bash
+learning-os add-book ~/books/system-design-interview.pdf
+```
+
+This extracts the table of contents and chapter text into `books/<slug>/`. Then in the AI chat, say "create a course from system-design-interview" — the agent reads the extracted content, maps book chapters to course chapters (grouping where needed), identifies gaps, and proposes a teaching plan.
+
+During learning, the agent teaches from the book's content in its own words, supplemented with its own knowledge. Quizzes draw from both the book and the teaching session.
+
+> Requires `pip install 'learning-os[book]'` for PDF/EPUB parsing support.
+
 ### Sharing courses
 
 Export a course to share it:
@@ -184,6 +212,9 @@ learning-os validate [directory]    Validate workspace and COURSE.yaml files
 
 learning-os list [directory]        List courses and show progress
 
+learning-os add-book <file>          Import a PDF/EPUB and extract chapters
+  --dir <workspace>                 Workspace directory (default: current)
+
 learning-os export <course-id>      Export a course as a .zip file
   --dir <workspace>                 Workspace directory (default: current)
   -o, --output <path>               Output file path
@@ -199,6 +230,9 @@ learning-os import <archive>        Import a course from a .zip file
 ```bash
 # Install in development mode with test dependencies
 pip install -e ".[dev]"
+
+# Include book parsing support
+pip install -e ".[dev,book]"
 
 # Run tests
 pytest tests/ -v

@@ -44,6 +44,8 @@ Say something like:
 > - "Teach me system design fundamentals"
 > - "I'm studying React hooks"
 > - "Help me learn Spanish vocabulary"
+>
+> You can also create a course from a book — run `learning-os add-book <file.pdf>` in the terminal, then say "create a course from \<slug\>".
 
 Wait for the user's response, then hand off to the `create-course` skill.
 

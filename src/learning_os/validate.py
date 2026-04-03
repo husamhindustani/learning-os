@@ -164,4 +164,38 @@ def _validate_course(
                     f"content_file '{ch['content_file']}' not found"
                 )
 
+    # ── Book source validation ─────────────────────────────────────────────
+    workspace_root = course_dir.parent.parent  # courses/<id>/ → workspace root
+    source = data.get("source")
+    if isinstance(source, dict) and source.get("type") == "book":
+        outline = source.get("outline")
+        if outline:
+            outline_path = workspace_root / outline
+            if not outline_path.exists():
+                warnings.append(
+                    f"{prefix}: source.outline '{outline}' not found "
+                    f"— run 'learning-os add-book' to import the book"
+                )
+        src_file = source.get("file")
+        if src_file:
+            src_path = workspace_root / src_file
+            if not src_path.exists():
+                warnings.append(
+                    f"{prefix}: source.file '{src_file}' not found"
+                )
+
+    for ch in chapters:
+        if not isinstance(ch, dict):
+            continue
+        ch_source = ch.get("source")
+        if not isinstance(ch_source, dict):
+            continue
+        for cf in ch_source.get("content_files", []):
+            cf_path = workspace_root / cf
+            if not cf_path.exists():
+                warnings.append(
+                    f"{prefix}: chapter '{ch.get('id', '?')}' "
+                    f"source.content_files entry '{cf}' not found"
+                )
+
     return errors, warnings

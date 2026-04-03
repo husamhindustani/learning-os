@@ -213,12 +213,12 @@ def test_upgrade_uses_config_not_directory_sniffing(tmp_workspace, quiet_console
     assert not (tmp_workspace / ".cursor" / "skills").exists()
 
 
-def test_scaffold_creates_all_six_skills(tmp_workspace, quiet_console):
+def test_scaffold_creates_all_skills(tmp_workspace, quiet_console):
     scaffold_workspace(str(tmp_workspace), tool="cursor", with_sample=False, console=quiet_console)
 
     expected_skills = [
-        "chapter-check", "create-course", "learn",
-        "learning-status", "onboarding", "save-progress",
+        "chapter-check", "create-course", "create-course-from-book",
+        "learn", "learning-status", "onboarding", "save-progress",
     ]
     skills_dir = tmp_workspace / ".cursor" / "skills"
     actual = sorted(d.name for d in skills_dir.iterdir() if d.is_dir())

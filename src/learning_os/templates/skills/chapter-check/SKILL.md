@@ -70,7 +70,8 @@ Load context from course materials and historical notes:
 1. Read `courses/[course-id]/COURSE.yaml` — get chapter topics
 2. Read the learning plan — find the chapter section, extract key concepts
 3. Read `courses/[course-id]/EXERCISES.md` — find the chapter's exercises section
-4. Read `notes/session-notes.md` — search for entries about this chapter:
+4. If the chapter has `source.content_files` in COURSE.yaml → read the book source content to draw quiz material from the original text as well as the teaching session
+5. Read `notes/session-notes.md` — search for entries about this chapter:
    - What doubts they originally had
    - Original quiz score (if any)
    - Topics discussed in depth
@@ -83,9 +84,10 @@ Load context from course materials and historical notes:
 
 ### Prioritize questions
 
-1. Core chapter topics (60-70%) — from COURSE.yaml topics list and learning plan
-2. Historical struggle areas (30-40%) — from session notes
-3. Practical application (1-2) — inspired by exercises
+1. Core chapter topics (50-60%) — from COURSE.yaml topics list and learning plan
+2. Book-specific content (10-20%) — concepts, definitions, or examples unique to the source book (only for book-based courses)
+3. Historical struggle areas (20-30%) — from session notes
+4. Practical application (1-2) — inspired by exercises
 
 ### Show comparison at end
 

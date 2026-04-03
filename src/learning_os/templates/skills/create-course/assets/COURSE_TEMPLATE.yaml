@@ -50,6 +50,22 @@ progress:
 #   compile: "mvn clean compile"
 #   run_demo: "mvn exec:java -q -Dexec.mainClass=\"{class}\""
 
+# Book source — for courses created from a book via create-course-from-book
+# source:
+#   type: book
+#   title: "Book Title"
+#   authors:
+#     - "Author Name"
+#   file: books/<slug>/<original-filename>
+#   outline: books/<slug>/book-outline.yaml
+
+# Per-chapter book source — add to individual chapters
+# chapters[].source:
+#   book_chapters: ["ch-1", "ch-2"]            # IDs from book-outline.yaml
+#   content_files:                              # extracted markdown to read at teach time
+#     - books/<slug>/book-content/ch-01-xxx.md
+#   supplementary_notes: "Optional note on what to teach beyond the book"
+
 # Prerequisites — what should the learner know before starting?
 # prerequisites:
 #   - "Basic understanding of X"
