@@ -28,9 +28,9 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 - Look at recently referenced files (e.g., files in `courses/java-evolution/`)
 
 **From progress file:**
-- Read `.learning-progress`
-- Find the most recently updated track
-- Suggest resuming or starting the next chapter
+- Read `.learning-progress` (JSON: `tracks.[track-name].last_saved` and `completed`)
+- Find the track with the most recent `last_date`
+- `last_saved` is the last completed chapter — suggest the next chapter not in `completed`
 
 **If still unclear:**
 - Read `courses/REGISTRY.md` and list available courses
@@ -63,9 +63,16 @@ Wait for choice before proceeding.
 ### 4. Load chapter content
 
 **Priority order:**
-1. If chapter has `content_file` field → read `courses/[course-id]/[content_file]`
-2. Otherwise → read `courses/[course-id]/LEARNING_PLAN.md`, find the section for this chapter
-3. If course has `chapters/` directory → look for `courses/[course-id]/chapters/[chapter-id].md`
+1. If chapter has a `source` block with `content_files` → read each file listed (paths are relative to workspace root, e.g. `books/<slug>/book-content/ch-01-xxx.md`). These contain extracted book text — use it as your primary teaching material but **teach in your own words**, adding context and examples
+2. If chapter has `content_file` field → read `courses/[course-id]/[content_file]`
+3. Otherwise → read `courses/[course-id]/LEARNING_PLAN.md`, find the section for this chapter
+4. If course has `chapters/` directory → look for `courses/[course-id]/chapters/[chapter-id].md`
+
+**For book-based chapters** (those with `source.content_files`):
+- Read the source content files to understand what the book says
+- Check for `source.supplementary_notes` — these tell you what to add beyond the book
+- Do NOT just repeat the book verbatim. Teach the concepts in your own words, reorganize for clarity, add examples the book doesn't have, and note when content is outdated
+- If the chapter maps to multiple book chapters, synthesize them into a coherent flow rather than teaching them sequentially
 
 ### 5. Teach one topic at a time
 

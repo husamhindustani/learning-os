@@ -32,22 +32,45 @@ No scripts or external tools — everything is a direct file write.
 
 ## Step 2: Update `.learning-progress`
 
-`.learning-progress` is a plain key-value file. Each line tracks one course:
+`.learning-progress` is a JSON file that tracks completed chapters per course:
 
+```json
+{
+  "tracks": {
+    "[track-name]": {
+      "completed": ["[chapter-id-1]", "[chapter-id-2]"],
+      "last_saved": "[chapter-id]",
+      "last_date": "YYYY-MM-DD HH:MM"
+    }
+  }
+}
 ```
-TRACK_[track-name]=[chapter-id] [YYYY-MM-DD HH:MM]
-```
+
+- `completed` — ordered list of all chapter IDs saved so far (append-only, never remove)
+- `last_saved` — the chapter ID saved this session
+- `last_date` — current timestamp
 
 **How to update it:**
-1. Read `.learning-progress` (create it if it doesn't exist)
-2. Find the line starting with `TRACK_[track-name]=` (where `track-name` comes from `progress.track_name` in COURSE.yaml)
-3. Replace that line with the updated value, or append it if not found
-4. Write the file back
+1. Read `.learning-progress` (start with `{"tracks": {}}` if the file is missing or empty)
+2. Parse as JSON; find or create the key `tracks.[track-name]` (where `track-name` comes from `progress.track_name` in COURSE.yaml, falling back to `track`)
+3. Append the chapter ID to `completed` if it is not already in the list
+4. Set `last_saved` to the chapter ID
+5. Set `last_date` to the current `YYYY-MM-DD HH:MM`
+6. Write the file back as formatted JSON
 
-**Example:** For java-evolution, chapter java9, track "java":
+**Example:** For java-evolution, chapter java9, track "java" (java8 was saved previously):
+```json
+{
+  "tracks": {
+    "java": {
+      "completed": ["java8", "java9"],
+      "last_saved": "java9",
+      "last_date": "2026-01-15 10:30"
+    }
+  }
+}
 ```
-TRACK_java=java9 2026-01-15 10:30
-```
+
 
 ## Step 3: Write session notes
 
