@@ -8,16 +8,28 @@ Works with **Cursor**, **Claude Code**, and any AI tool that supports the Agent 
 
 ## Install
 
+Requires Python 3.9+.
+
+**Recommended** — isolated CLI with [pipx](https://pip.pypa.io/en/stable/installation/) (install `pipx` with `pip install pipx` if needed):
+
 ```bash
 pipx install learning-os
 ```
 
-> Requires Python 3.9+. Install `pipx` with `pip install pipx` if needed.
+**Alternative** — inside a virtual environment:
 
-To create courses from PDF/EPUB books, install with book parsing support:
+```bash
+python -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install learning-os
+```
+
+To create courses from PDF/EPUB books, install with the book parsing extra:
 
 ```bash
 pipx install 'learning-os[book]'
+# or, in a venv:
+pip install 'learning-os[book]'
 ```
 
 ---
@@ -167,7 +179,7 @@ This extracts the table of contents and chapter text into `books/<slug>/`. Then 
 
 During learning, the agent teaches from the book's content in its own words, supplemented with its own knowledge. Quizzes draw from both the book and the teaching session.
 
-> Requires `pip install 'learning-os[book]'` for PDF/EPUB parsing support.
+> Requires the `[book]` extra — see **Install**.
 
 ### Sharing courses
 
@@ -237,6 +249,20 @@ pip install -e ".[dev,book]"
 # Run tests
 pytest tests/ -v
 ```
+
+### Releasing (maintainers)
+
+Releases are published to [PyPI](https://pypi.org/project/learning-os/) by GitHub Actions when you push a version tag matching `v*` (for example `v1.0.1`).
+
+1. Bump the `version` in `pyproject.toml` on `main` (or your release branch) and merge.
+2. Create and push the tag from the commit you want to ship:
+
+   ```bash
+   git tag v1.0.1
+   git push origin v1.0.1
+   ```
+
+3. The **Publish to PyPI** workflow builds with Hatch and uploads using [trusted publishing](https://docs.pypi.org/trusted-publishers/) (OIDC). The PyPI project must have that integration configured for this repository’s `pypi` environment (see the comment in `.github/workflows/publish.yml`).
 
 ---
 

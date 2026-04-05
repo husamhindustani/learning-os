@@ -43,9 +43,9 @@ dev = [
 learning-os = "learning_os.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/husam-haque/learning-os"
-Repository = "https://github.com/husam-haque/learning-os"
-Issues = "https://github.com/husam-haque/learning-os/issues"
+Homepage = "https://github.com/husamhindustani/learning-os"
+Repository = "https://github.com/husamhindustani/learning-os"
+Issues = "https://github.com/husamhindustani/learning-os/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/learning_os"]
