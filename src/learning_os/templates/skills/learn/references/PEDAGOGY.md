@@ -27,6 +27,15 @@ This gives the concept a reason to exist before explaining what it is.
 - Code examples should be short, runnable, and focused on the single concept
 - Connect examples to scenarios the user might actually encounter
 
+### Show, don't hand-wave (for code-heavy concepts)
+
+When teaching anything that is fundamentally about code or algorithms (data structures, system internals, APIs, protocols, distributed-systems mechanics), do not stop at conceptual descriptions. Produce **runnable code that demonstrates the mechanism**.
+
+- **Save the code as a file** under `courses/<course-id>/resources/<chapter-id>/`, not just inline in the chat. The user uses these for later revision; chat output disappears.
+- Inline snippets in the response should focus on the focal lines being explained; the file holds the full runnable version. Reference the file path so the user can open it.
+- Prefer the user's familiar programming language. Check memory for a stated preference; if none, ask once at the start of the chapter ("I'll use Java for examples — let me know if you'd prefer something else").
+- The bar for adding code: if a learner could plausibly walk away from the topic still wondering "but how does that *actually* happen in code?", you owe them a code file.
+
 ### Check understanding frequently
 
 After explaining each concept, ask something like:

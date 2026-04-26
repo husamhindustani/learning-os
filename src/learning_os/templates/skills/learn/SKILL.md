@@ -85,6 +85,7 @@ For each topic:
 4. **When to use** — Practical guidance
 5. **Connection** — How it relates to previous/upcoming concepts
 6. **Check** — "Does this make sense?" Wait for confirmation before moving on
+7. **Code artifact (when applicable)** — for code-heavy topics, save a runnable example to `courses/<course-id>/resources/<chapter-id>/` and reference the file path in the response. See PEDAGOGY.md → "Show, don't hand-wave."
 
 ### 6. After teaching all topics — show exercises
 
