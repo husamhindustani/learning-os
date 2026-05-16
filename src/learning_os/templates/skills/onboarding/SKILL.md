@@ -68,15 +68,31 @@ Once the first course is created, explain the core three interactions:
 
 If the user already has courses set up:
 
-1. Read `.learning-progress` to find the most recently updated track
-2. Read `courses/REGISTRY.md` to find that course's details
-3. Read `courses/[course-id]/COURSE.yaml` to find the current chapter
+1. Read `.learning-progress` and pick the `tracks.[track-name]` with the most recent `last_date`.
+2. Resolve that track to a course by scanning `courses/*/COURSE.yaml` for one whose `progress.track_name` (or `track`) matches.
+3. Check `tracks.[track-name].in_progress`:
+   - **If present** — the user is mid-split. Resolve `chapter_id` → chapter title from COURSE.yaml. Count sessions with `completed_date` vs total. Identify the next session (first without `completed_date`).
+   - **If absent** — the user finished their last chapter cleanly. The next chapter is the first one in COURSE.yaml not in `completed`.
+
 4. Show a brief status:
+
+**In-progress case:**
 
 > Welcome back! Here's where you left off:
 >
-> **[Course Title]** — [Current Chapter]
-> Last updated: [timestamp]
+> **[Course Title]** — [Chapter Title], Session [N] of [M] complete
+> Next: **Session [N+1] — [session title]**
+> Last updated: [last_date]
+>
+> Ready to continue? Say "continue".
+> Or say "show my progress" to see everything.
+
+**Clean case:**
+
+> Welcome back! Here's where you left off:
+>
+> **[Course Title]** — last completed **[Chapter Title]**
+> Last updated: [last_date]
 >
 > Ready to continue? Say "continue" or "teach me [next chapter]".
 > Or say "show my progress" to see everything.

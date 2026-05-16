@@ -27,15 +27,22 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 - Check current conversation for course/chapter mentions
 - Look at recently referenced files (e.g., files in `courses/java-evolution/`)
 
-**From progress file and notes:**
-- **First, identify the active course** — read `.learning-progress` and pick the `tracks.[track-name]` entry with the most recent `last_date`. Resolve that track to a course-id by scanning `courses/*/COURSE.yaml` for one whose `progress.track_name` (or `track`) matches.
-- **Then check for an in-progress chapter** — open `courses/[course-id]/session-notes.md` (if it exists) and scan the top entry. If it contains a `Chapter session plan` block with any unchecked (⏳) sessions, the user is mid-chapter:
-  - Use that chapter as the resumption target.
-  - The first ⏳ session in the plan is the next session to teach.
-  - Use that session's topic list (from the plan block) as the topics to cover — do NOT re-teach already-checked (✅) sessions.
-  - Announce: "Resuming **[Chapter]** at **Session N — [session title]**. We'll cover: [topics]."
-- **Otherwise**, use `.learning-progress` to pick the next chapter: `last_saved` is the last completed chapter — suggest the next chapter not in `completed`.
-- When the user explicitly names a course (e.g. "continue java-evolution"), skip the track lookup and read that course's `session-notes.md` directly.
+**From `.learning-progress`:**
+- **Identify the active track.** For bare "continue", pick the `tracks.[track-name]` with the most recent `last_date`. For explicit "continue [course]", look up that course's `progress.track_name` (or `track`) in `COURSE.yaml` and use it.
+- **Check for an in-progress chapter** — if `tracks.[track-name].in_progress` exists, the user is mid-split:
+  - Resume `in_progress.chapter_id`.
+  - The next session is the first entry in `in_progress.sessions[]` without a `completed_date`.
+  - Use that session's `topics` list as the teaching agenda — do NOT re-teach sessions that already have a `completed_date`.
+  - Announce: "Resuming **[Chapter Title]** at **Session N — [session title]**. We'll cover: [topics]."
+  - Resolve the course-id from `chapter_id` by scanning `courses/*/COURSE.yaml` for one that contains a matching chapter id; load that COURSE.yaml.
+- **Otherwise**, pick the next chapter: `last_saved` is the last completed; suggest the next chapter not in `completed`.
+
+**Collision check (explicit chapter request):**
+If the user says "learn [course] [chapter-Y]" and `tracks.[track-name].in_progress` exists for a different `chapter_id`, do **not** silently switch. Prompt:
+
+> You're mid-way through **[in_progress chapter title]** — Session N of M complete. Resume that, or abandon and start [chapter-Y]?
+
+If the user picks abandon, delete `in_progress` from `.learning-progress` before continuing. If resume, ignore the explicit request and go to the in-progress chapter.
 
 **If still unclear:**
 - Read `courses/REGISTRY.md` and list available courses
@@ -64,6 +71,31 @@ If chapter has `large_chapter: true` OR has 6+ topics:
 > What works best?"
 
 Wait for choice before proceeding.
+
+**If the user picks B (break into sessions):**
+
+1. Propose a split (titles + topic-per-session assignment), confirm with the user.
+2. Once confirmed, **write the split to `.learning-progress` immediately, before teaching Session 1.** Update `tracks.[track-name].in_progress`:
+
+   ```json
+   "in_progress": {
+     "chapter_id": "[chapter-id]",
+     "sessions": [
+       {"id": "[slug-of-title]", "title": "[Session title]", "topics": ["topic 1", "topic 2", ...]},
+       ...
+     ]
+   }
+   ```
+
+   - `id` is a slug of the title (lowercase, hyphens for spaces). If the user doesn't title the sessions, fall back to `session-1`, `session-2`, etc. IDs must be unique within the array.
+   - `topics` is the subset of the chapter's topics this session will cover.
+   - Do not include `completed_date` — that gets added by `save-progress` after each session finishes.
+
+3. Teach Session 1's topics (the first session in the array). When that session is saved, `save-progress` will mark it complete and the next "continue" will pick up Session 2.
+
+**If the user picks A:** No `in_progress` block. Teach all topics, save normally as a full chapter.
+
+**If the user picks C:** No `in_progress` block. Teach only the picked topics. This is a one-shot pass, not a multi-session split — if the user later wants the rest, they ask explicitly.
 
 ### 4. Load chapter content
 

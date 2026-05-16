@@ -37,7 +37,7 @@ books/                ← imported books (created by learning-os add-book)
   [slug]/
     book-outline.yaml ← extracted TOC and chapter list
     book-content/     ← chapter text as markdown (read by learn skill)
-.learning-progress    ← JSON progress file (written by save-progress skill)
+.learning-progress    ← JSON progress file (per-track completed chapters + optional in_progress session split)
 .learning-os/
   hooks/              ← shared automation scripts (session breadcrumb only)
 ```
