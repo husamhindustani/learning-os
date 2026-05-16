@@ -22,8 +22,6 @@ def validate_workspace(directory: str) -> Tuple[List[str], List[str]]:
 
     if not (target / "courses").is_dir():
         errors.append("Missing courses/ directory")
-    if not (target / "notes").is_dir():
-        warnings.append("Missing notes/ directory")
     if not (target / ".learning-progress").exists():
         warnings.append("Missing .learning-progress file")
 

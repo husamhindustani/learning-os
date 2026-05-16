@@ -79,7 +79,7 @@ Learning OS installs seven **Agent Skills** into your workspace. Skills are disc
 6. Repeat
 ```
 
-Progress is saved to `.learning-progress` (JSON — tracks all completed chapters per course) and `notes/session-notes.md` (your learning journal) — readable, yours, and version-controlled if you choose to commit them.
+Progress is saved to `.learning-progress` (JSON — tracks all completed chapters per course) and `courses/<course-id>/session-notes.md` (a per-course learning journal) — readable, yours, and version-controlled if you choose to commit them.
 
 ---
 
@@ -107,17 +107,21 @@ your-workspace/
 │   ├── config.json                 ← Workspace config (tool choice, used by upgrade)
 │   └── version                     ← Engine version stamp
 ├── courses/                        ← your content (never touched by upgrades)
-│   └── REGISTRY.md
+│   ├── REGISTRY.md
+│   └── <course-id>/
+│       ├── COURSE.yaml
+│       ├── LEARNING_PLAN.md
+│       ├── EXERCISES.md
+│       └── session-notes.md        ← per-course session journal (created lazily by save-progress)
 ├── books/                          ← imported books (created by add-book command)
 │   └── <slug>/
 │       ├── <original>.pdf
 │       ├── book-outline.yaml
 │       └── book-content/           ← extracted chapter text as markdown
-├── notes/                          ← your session journal
 └── .learning-progress              ← JSON progress file (written by save-progress skill)
 ```
 
-Your `courses/`, `notes/`, and `.learning-progress` are **never touched** by upgrades — they belong to you.
+Your `courses/` and `.learning-progress` are **never touched** by upgrades — they belong to you.
 
 `CLAUDE.md` is written once on `init` and never overwritten — customise it freely. The engine skills reference and constraints live in `.learning-os/CONTEXT.md`, which is refreshed on every `upgrade`.
 
@@ -137,7 +141,7 @@ Both Cursor and Claude Code are fully supported. All features work on both.
 | Hook script | `.learning-os/hooks/session_end.py` (shared, cross-platform) | same |
 | Progress tracking | `save-progress` skill writes `.learning-progress` directly | same |
 
-The `session_end.py` hook is a safety net — if you close the AI tool without running `save-progress`, it writes a breadcrumb entry to `notes/session-notes.md`. Both hook configs are generated with the exact Python interpreter path at init time, so they work correctly regardless of platform or virtual environment.
+The `session_end.py` hook is a safety net — if you close the AI tool without running `save-progress`, it writes a breadcrumb entry to the active course's `courses/<course-id>/session-notes.md` (resolved from the most recently saved track in `.learning-progress`). Both hook configs are generated with the exact Python interpreter path at init time, so they work correctly regardless of platform or virtual environment.
 
 When you run `learning-os init`, you're asked which tool you use. Choose `both` to configure for both.
 
@@ -207,7 +211,7 @@ learning-os upgrade
 learning-os upgrade ~/my-learning
 ```
 
-Upgrades never touch your `courses/`, `notes/`, or `.learning-progress`. The upgrade shows which version you're upgrading from and to.
+Upgrades never touch your `courses/` or `.learning-progress`. The upgrade shows which version you're upgrading from and to.
 
 ---
 

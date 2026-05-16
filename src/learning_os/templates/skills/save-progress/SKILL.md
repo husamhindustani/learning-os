@@ -74,7 +74,7 @@ No scripts or external tools — everything is a direct file write.
 
 ## Step 3: Write session notes
 
-Append a new entry to `notes/session-notes.md` (create the file if it doesn't exist).
+Append a new entry to `courses/[course-id]/session-notes.md` (create the file if it doesn't exist). Session notes are per-course — never write to a global notes file.
 
 **New entries go at the TOP** of the file, directly after the `# Session notes` header.
 
@@ -160,4 +160,4 @@ Do not ask for confirmation when the course and chapter are obvious from context
 - Include quiz scores if a quiz was taken this session
 - Capture doubts and clarifications — they are valuable for the review mode of `chapter-check`
 - The session notes are also read by `chapter-check` review mode to reconstruct context
-- `.learning-progress` is the fast-lookup index; `session-notes.md` is the full record
+- `.learning-progress` is the fast-lookup index; each course's `session-notes.md` is its full record

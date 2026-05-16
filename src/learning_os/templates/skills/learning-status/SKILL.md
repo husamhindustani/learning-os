@@ -16,7 +16,7 @@ Show an overview of all courses and the user's progress.
 
 - Read `.learning-progress` (JSON format) for per-track completion data
 - Read `courses/REGISTRY.md` for the list of courses
-- Additionally, scan the top entries of `notes/session-notes.md` for any `Chapter session plan` block with unchecked (⏳) sessions. Each such block indicates a chapter that is **in progress** but not yet in `.learning-progress.completed` — record the chapter ID, how many sessions are complete (✅), and the total session count.
+- For each course, if `courses/[course-id]/session-notes.md` exists, scan its top entry for a `Chapter session plan` block with unchecked (⏳) sessions. Each such block indicates a chapter that is **in progress** but not yet in `.learning-progress.completed` — record the chapter ID, how many sessions are complete (✅), and the total session count. Do not look for a global notes file; session notes are per-course.
 
 **`.learning-progress` format:**
 ```json

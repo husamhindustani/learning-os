@@ -8,7 +8,7 @@ Items are grouped by theme, not strictly by priority. Each entry includes the pr
 
 ## Sessions as a first-class concept
 
-**Problem.** Today, large chapters are split into "sessions" ad-hoc during the `learn` skill — the breakdown is negotiated in conversation, never persisted in any schema. We added a lightweight convention (2026-05-16) where `save-progress` writes a `Chapter session plan` block into `notes/session-notes.md`, and `learn` reads it back on resume. This works but is a string-matching contract over markdown, not real data.
+**Problem.** Today, large chapters are split into "sessions" ad-hoc during the `learn` skill — the breakdown is negotiated in conversation, never persisted in any schema. We added a lightweight convention (2026-05-16) where `save-progress` writes a `Chapter session plan` block into `courses/<course-id>/session-notes.md`, and `learn` reads it back on resume. This works but is a string-matching contract over markdown, not real data.
 
 **Proposed direction.**
 
@@ -60,26 +60,11 @@ Items are grouped by theme, not strictly by priority. Each entry includes the pr
 
 ---
 
-## Per-course session notes
-
-**Problem.** `notes/session-notes.md` is repo-global. A workspace with many courses (system design + Java + React + Spanish + …) will accumulate hundreds of entries in a single file, mixing unrelated learning histories. Length alone makes it hard to read; cross-course noise makes `chapter-check` review mode harder.
-
-**Proposed direction.**
-
-- Move session notes to `courses/<course-id>/session-notes.md` (or `courses/<course-id>/notes/session.md`).
-- Keep `notes/` at the repo root for cross-cutting journals (e.g., overall learning reflections, workflow changes) — but route per-course session entries to per-course files.
-- Update `save-progress`, `learn`, `chapter-check` to read/write the per-course path.
-- Provide a migration: split the existing global `notes/session-notes.md` by course, leave a stub at the original path with a pointer.
-
-**Why not done yet.** Touches three skills + a migration. Worth doing alongside the sessions-as-first-class work, since both reshape how progress is stored.
-
----
-
 ## Re-evaluate session-end auto-capture hook
 
 **Status.** Disabled 2026-05-16 (in `scaffold.py`). Script preserved at `templates/hooks/session_end.py`.
 
-**Original purpose.** Write a breadcrumb to `notes/session-notes.md` if the user closes their AI tool without running `save my progress`, so no session is invisible in the journal.
+**Original purpose.** Write a breadcrumb to the active course's `courses/<course-id>/session-notes.md` if the user closes their AI tool without running `save my progress`, so no session is invisible in the journal.
 
 **Why disabled.** Both Claude Code and Cursor retain session context across reopens. The breadcrumb fires on every `SessionEnd` regardless of whether the user actually lost context — producing noise that has to be cleaned up by hand. In practice the user (and the agent) can reconstruct session intent from the live conversation when reopening.
 
@@ -93,7 +78,7 @@ Items are grouped by theme, not strictly by priority. Each entry includes the pr
 
 **Problem.** The `learning-status` skill was updated (2026-05-16) to display in-progress chapters from the notes-based session plan. The CLI command `learning-os list` still shows only `.learning-progress.completed` and won't reflect partial-chapter state.
 
-**Proposed direction.** Bring the CLI to parity — read `notes/session-notes.md` for `Chapter session plan` blocks, surface in-progress chapters in the listing output. Same logic as the skill, implemented in `scaffold.py` / `cli.py`.
+**Proposed direction.** Bring the CLI to parity — for each course, read `courses/<course-id>/session-notes.md` for `Chapter session plan` blocks, surface in-progress chapters in the listing output. Same logic as the skill, implemented in `scaffold.py` / `cli.py`.
 
 **Priority.** Low. The skill covers the interactive case (where the user actually is when they ask). The CLI is for occasional external inspection.
 
@@ -125,7 +110,7 @@ Items are grouped by theme, not strictly by priority. Each entry includes the pr
 
 Recording the shape so we don't re-derive it when migrating to first-class sessions:
 
-- **Where it lives:** Top entry in `notes/session-notes.md` per partial save.
+- **Where it lives:** Top entry in `courses/<course-id>/session-notes.md` per partial save.
 - **Trigger for partial save:** Conversation context indicates "Session N of M" — not strictly tied to `large_chapter: true`.
 - **Format:**
   ```markdown

@@ -28,15 +28,14 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 - Look at recently referenced files (e.g., files in `courses/java-evolution/`)
 
 **From progress file and notes:**
-- **First, check for an in-progress chapter** — scan the top entries of `notes/session-notes.md`. If the most recent entry contains a `Chapter session plan` block with any unchecked (⏳) sessions, the user is mid-chapter:
+- **First, identify the active course** — read `.learning-progress` and pick the `tracks.[track-name]` entry with the most recent `last_date`. Resolve that track to a course-id by scanning `courses/*/COURSE.yaml` for one whose `progress.track_name` (or `track`) matches.
+- **Then check for an in-progress chapter** — open `courses/[course-id]/session-notes.md` (if it exists) and scan the top entry. If it contains a `Chapter session plan` block with any unchecked (⏳) sessions, the user is mid-chapter:
   - Use that chapter as the resumption target.
   - The first ⏳ session in the plan is the next session to teach.
   - Use that session's topic list (from the plan block) as the topics to cover — do NOT re-teach already-checked (✅) sessions.
   - Announce: "Resuming **[Chapter]** at **Session N — [session title]**. We'll cover: [topics]."
-- **Otherwise, fall back to `.learning-progress`:**
-  - Read `.learning-progress` (JSON: `tracks.[track-name].last_saved` and `completed`)
-  - Find the track with the most recent `last_date`
-  - `last_saved` is the last completed chapter — suggest the next chapter not in `completed`
+- **Otherwise**, use `.learning-progress` to pick the next chapter: `last_saved` is the last completed chapter — suggest the next chapter not in `completed`.
+- When the user explicitly names a course (e.g. "continue java-evolution"), skip the track lookup and read that course's `session-notes.md` directly.
 
 **If still unclear:**
 - Read `courses/REGISTRY.md` and list available courses
