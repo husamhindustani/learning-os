@@ -111,6 +111,41 @@ Append a new entry to `notes/session-notes.md` (create the file if it doesn't ex
 - **Other learning:** Discussed mutable vs immutable types in depth (user confused about why str is immutable). Clarified type() vs isinstance() — isinstance() is preferred. User asked about f-strings vs .format() — covered both.
 ```
 
+## Step 3a: Partial chapter saves (multi-session chapters)
+
+When a chapter is taught across multiple sessions (typical for `large_chapter: true`, but also possible whenever the user has split a chapter by choice), capture the **chapter session plan** inside the notes entry so a fresh agent — Claude Code, Cursor, or any other Skills-compatible tool — can resume cleanly from notes alone.
+
+**Differences from a normal save:**
+
+1. **Skip Step 2** — do NOT add the chapter to `.learning-progress.completed` until the **final** session of that chapter. For partial saves, notes alone carry the record.
+
+2. **Append `(Session N of M)`** to the Progress line after the chapter title.
+
+3. **Insert a "Chapter session plan" block** between the Progress line and the Session summary. List all planned sessions with status markers:
+   - ✅ for completed sessions
+   - ⏳ for upcoming sessions
+
+**Example partial entry:**
+
+```markdown
+## 2026-05-16
+
+**Progress:** System Design Vol 1 — Design a Key-Value Store (Session 1 of 3) (quiz: 7/7)
+
+**Chapter session plan:**
+- ✅ **Session 1 — The Setup:** Single server vs distributed KV store, CAP theorem
+- ⏳ **Session 2 — The Static Structure:** Data partitioning, replication, consistency models (quorum)
+- ⏳ **Session 3 — The Dynamic Behavior:** Handling failures (gossip, merkle trees), write/read paths
+
+**Session summary:**
+- [usual session content]
+- **Other learning:** [tangents, etc.]
+```
+
+**Subsequent partial saves:** the latest entry's `Chapter session plan` block is the source of truth. Carry it forward with updated checkmarks — copy the same plan block into the new entry and tick off the session that just completed.
+
+**Final session save:** run Step 2 normally (add chapter to `completed`). The final entry's plan should show all sessions ✅.
+
 ## Step 4: Confirm
 
 Reply briefly:

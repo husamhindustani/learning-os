@@ -16,6 +16,7 @@ Show an overview of all courses and the user's progress.
 
 - Read `.learning-progress` (JSON format) for per-track completion data
 - Read `courses/REGISTRY.md` for the list of courses
+- Additionally, scan the top entries of `notes/session-notes.md` for any `Chapter session plan` block with unchecked (⏳) sessions. Each such block indicates a chapter that is **in progress** but not yet in `.learning-progress.completed` — record the chapter ID, how many sessions are complete (✅), and the total session count.
 
 **`.learning-progress` format:**
 ```json
@@ -51,6 +52,7 @@ Learning Progress
 
 [Course Title] ([course-id])
   Last completed: [Chapter Title]
+  In progress:    [Chapter Title] ([sessions completed]/[total sessions] sessions)   ← only if applicable
   Progress:       [N]/[total] chapters ([%]%)
   Last saved:     [YYYY-MM-DD HH:MM]
   Next up:        [Next Chapter Title] — say "teach me [course-id] [next-chapter-id]"
@@ -61,6 +63,11 @@ Learning Progress
 ---
 Total: [N] chapters completed across [M] course(s)
 ```
+
+**When a chapter is in progress** (detected via notes in Step 1):
+- Show the `In progress:` line between `Last completed:` and `Progress:`.
+- Set `Next up:` to point at the next ⏳ session, e.g. `Session N of [Chapter Title] — say "continue [course-id]"`.
+- Do NOT count the in-progress chapter toward the completed total (it isn't done yet).
 
 ### 4. If no progress at all
 
