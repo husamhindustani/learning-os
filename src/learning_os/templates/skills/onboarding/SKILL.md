@@ -71,7 +71,7 @@ If the user already has courses set up:
 1. Read `.learning-progress` and pick the `tracks.[track-name]` with the most recent `last_date`.
 2. Resolve that track to a course by scanning `courses/*/COURSE.yaml` for one whose `progress.track_name` (or `track`) matches.
 3. Check `tracks.[track-name].in_progress`:
-   - **If present** — the user is mid-split. Resolve `chapter_id` → chapter title from COURSE.yaml. Count sessions with `completed_date` vs total. Identify the next session (first without `completed_date`).
+   - **If present** — the user is mid-split. Resolve `chapter_id` → chapter title from COURSE.yaml. Count sessions with `completed: true` vs total. Identify the next session (first with `completed: false`).
    - **If absent** — the user finished their last chapter cleanly. The next chapter is the first one in COURSE.yaml not in `completed`.
 
 4. Show a brief status:

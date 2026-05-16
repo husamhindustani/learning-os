@@ -29,8 +29,8 @@ The schema:
       "in_progress": {
         "chapter_id": "...",
         "sessions": [
-          {"id": "...", "title": "...", "topics": [...], "completed_date": "YYYY-MM-DD"},
-          {"id": "...", "title": "...", "topics": [...]}
+          {"title": "...", "topics": [...], "completed": true},
+          {"title": "...", "topics": [...], "completed": false}
         ]
       }
     }
@@ -40,7 +40,7 @@ The schema:
 
 - `completed` — authoritative completion list (chapter IDs)
 - `last_saved` / `last_date` — most recent save
-- `in_progress` — present only when a chapter is mid-way through a user-defined split. Sessions with `completed_date` are done; those without are pending. Do not read session-notes.md for plan state — `in_progress` is the source of truth.
+- `in_progress` — present only when a chapter is mid-way through a user-defined split. Each session has `title`, `topics`, `completed: true|false`. Do not read session-notes.md for plan state — `in_progress` is the source of truth.
 
 ### 2. For each course in REGISTRY.md
 
@@ -48,9 +48,9 @@ The schema:
 - Get the track name from `progress.track_name` (falling back to `track`)
 - Look up `tracks.[track-name]` in the progress data
 - **Progress:** count how many chapter `id` values from `chapters` appear in `completed`
-- **In progress:** if `in_progress` exists, resolve `chapter_id` → chapter title from `COURSE.yaml.chapters[]`, count sessions with `completed_date` vs total
+- **In progress:** if `in_progress` exists, resolve `chapter_id` → chapter title from `COURSE.yaml.chapters[]`, count sessions with `completed: true` vs total
 - **Next up:**
-  - If `in_progress` exists → next session (first without `completed_date`); display its title.
+  - If `in_progress` exists → next session (first with `completed: false`); display its title.
   - Else → first chapter whose `id` is NOT in `completed`.
 
 ### 3. Display format

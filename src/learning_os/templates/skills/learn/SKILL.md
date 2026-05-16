@@ -31,8 +31,8 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 - **Identify the active track.** For bare "continue", pick the `tracks.[track-name]` with the most recent `last_date`. For explicit "continue [course]", look up that course's `progress.track_name` (or `track`) in `COURSE.yaml` and use it.
 - **Check for an in-progress chapter** — if `tracks.[track-name].in_progress` exists, the user is mid-split:
   - Resume `in_progress.chapter_id`.
-  - The next session is the first entry in `in_progress.sessions[]` without a `completed_date`.
-  - Use that session's `topics` list as the teaching agenda — do NOT re-teach sessions that already have a `completed_date`.
+  - The next session is the first entry in `in_progress.sessions[]` with `completed: false`.
+  - Use that session's `topics` list as the teaching agenda — do NOT re-teach sessions with `completed: true`.
   - Announce: "Resuming **[Chapter Title]** at **Session N — [session title]**. We'll cover: [topics]."
   - Resolve the course-id from `chapter_id` by scanning `courses/*/COURSE.yaml` for one that contains a matching chapter id; load that COURSE.yaml.
 - **Otherwise**, pick the next chapter: `last_saved` is the last completed; suggest the next chapter not in `completed`.
@@ -40,7 +40,7 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 **Collision check (explicit chapter request):**
 If the user says "learn [course] [chapter-Y]" and `tracks.[track-name].in_progress` exists for a different `chapter_id`, do **not** silently switch. Prompt:
 
-> You're mid-way through **[in_progress chapter title]** — Session N of M complete. Resume that, or abandon and start [chapter-Y]?
+> You're mid-way through **[in_progress chapter title]** — [N of M] sessions complete. Resume that, or abandon and start [chapter-Y]?
 
 If the user picks abandon, delete `in_progress` from `.learning-progress` before continuing. If resume, ignore the explicit request and go to the in-progress chapter.
 
@@ -81,17 +81,17 @@ Wait for choice before proceeding.
    "in_progress": {
      "chapter_id": "[chapter-id]",
      "sessions": [
-       {"id": "[slug-of-title]", "title": "[Session title]", "topics": ["topic 1", "topic 2", ...]},
-       ...
+       {"title": "[Session title]", "topics": ["topic 1", "topic 2"], "completed": false},
+       {"title": "[Session title]", "topics": ["topic 3", "topic 4"], "completed": false}
      ]
    }
    ```
 
-   - `id` is a slug of the title (lowercase, hyphens for spaces). If the user doesn't title the sessions, fall back to `session-1`, `session-2`, etc. IDs must be unique within the array.
+   - Titles are plain strings (the same way you'd reference them in conversation). Identity is by exact title match. If the user doesn't title the sessions, fall back to `Session 1`, `Session 2`, etc. Titles must be unique within the array.
    - `topics` is the subset of the chapter's topics this session will cover.
-   - Do not include `completed_date` — that gets added by `save-progress` after each session finishes.
+   - All sessions start with `"completed": false`. `save-progress` flips them to `true` as each session finishes.
 
-3. Teach Session 1's topics (the first session in the array). When that session is saved, `save-progress` will mark it complete and the next "continue" will pick up Session 2.
+3. Teach Session 1's topics (the first session in the array). When that session is saved, `save-progress` will flip `completed` and the next "continue" will pick up Session 2.
 
 **If the user picks A:** No `in_progress` block. Teach all topics, save normally as a full chapter.
 
