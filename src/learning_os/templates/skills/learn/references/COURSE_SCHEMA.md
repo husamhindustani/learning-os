@@ -10,8 +10,15 @@ courses/
     ├── COURSE.yaml       ← described here
     ├── LEARNING_PLAN.md
     ├── EXERCISES.md
+    ├── resources/        ← conventional home for chapter code samples
+    │   └── [chapter-id]/ │   created by the `learn` skill when teaching
+    │       └── ...       │   code-heavy topics (see PEDAGOGY.md)
     └── ...
 ```
+
+### `resources/` directory convention
+
+When the `learn` skill teaches a code-heavy topic, it saves runnable code samples under `courses/<course-id>/resources/<chapter-id>/` so the user has a persistent reference for revision. This is a convention, not a schema field — no entry in COURSE.yaml is required. See `learn` skill's `references/PEDAGOGY.md` → "Show, don't hand-wave."
 
 ## Full Schema
 

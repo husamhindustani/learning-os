@@ -32,19 +32,18 @@ courses/              ← user's learning content (never modify without instruct
     COURSE.yaml       ← course definition (schema in learn skill references)
     LEARNING_PLAN.md
     EXERCISES.md
+    session-notes.md  ← per-course learning journal (append-only, newest entry at top)
 books/                ← imported books (created by learning-os add-book)
   [slug]/
     book-outline.yaml ← extracted TOC and chapter list
     book-content/     ← chapter text as markdown (read by learn skill)
-notes/
-  session-notes.md    ← learning journal (append-only, newest entry at top)
-.learning-progress    ← JSON progress file (written by save-progress skill)
+.learning-progress    ← JSON progress file (per-track completed chapters + optional in_progress session split)
 .learning-os/
   hooks/              ← shared automation scripts (session breadcrumb only)
 ```
 
 ## Important constraints
 
-- Never delete or overwrite files in `courses/`, `notes/`, or `.learning-progress` without explicit user instruction
-- Session notes are append-only — always add new entries at the top
+- Never delete or overwrite files in `courses/` or `.learning-progress` without explicit user instruction
+- Session notes live at `courses/<course-id>/session-notes.md` — one file per course, append-only, newest entry at the top
 - COURSE.yaml files follow the canonical schema (see `learn` skill references/COURSE_SCHEMA.md)

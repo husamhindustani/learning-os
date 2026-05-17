@@ -71,7 +71,7 @@ Load context from course materials and historical notes:
 2. Read the learning plan — find the chapter section, extract key concepts
 3. Read `courses/[course-id]/EXERCISES.md` — find the chapter's exercises section
 4. If the chapter has `source.content_files` in COURSE.yaml → read the book source content to draw quiz material from the original text as well as the teaching session
-5. Read `notes/session-notes.md` — search for entries about this chapter:
+5. Read `courses/[course-id]/session-notes.md` — search for entries about this chapter:
    - What doubts they originally had
    - Original quiz score (if any)
    - Topics discussed in depth

@@ -17,7 +17,6 @@ TEMPLATES_DIR = Path(__file__).parent / "templates"
 # User-owned paths — never overwritten by init or upgrade.
 USER_PATHS = [
     "courses/",
-    "notes/",
     ".learning-progress",
 ]
 
@@ -235,37 +234,44 @@ def _python_command() -> str:
 
 
 def _write_cursor_hooks_json(dest: Path, action: str, console: Console):
-    """Write Cursor hooks.json pointing to the shared session-end script."""
+    """Write Cursor hooks.json.
+
+    The sessionEnd hook is currently disabled — modern AI tools (Cursor, Claude Code)
+    retain session context across reopens, making auto-captured breadcrumbs more
+    noise than signal. The script at .learning-os/hooks/session_end.py is preserved
+    for future use. See FUTURE.md ("Re-evaluate session-end auto-capture hook").
+
+    To re-enable, add this entry to the "hooks" dict:
+        "sessionEnd": [{
+            "command": f"{_python_command()} .learning-os/hooks/session_end.py",
+            "description": "Auto-capture session breadcrumb to the active course's session-notes.md",
+        }]
+    """
     config = {
         "version": 1,
-        "hooks": {
-            "sessionEnd": [
-                {
-                    "command": f"{_python_command()} .learning-os/hooks/session_end.py",
-                    "description": "Auto-capture session breadcrumb to notes/session-notes.md",
-                }
-            ],
-        },
+        "hooks": {},
     }
     dest.write_text(json.dumps(config, indent=2) + "\n")
     console.print(f"  [green]{action}[/green] .cursor/hooks/hooks.json")
 
 
 def _write_claude_settings_json(dest: Path, action: str, console: Console):
-    """Write Claude Code settings.json pointing to the shared session-end script."""
+    """Write Claude Code settings.json.
+
+    The SessionEnd hook is currently disabled — see _write_cursor_hooks_json for
+    rationale. The script at .learning-os/hooks/session_end.py is preserved.
+    See FUTURE.md ("Re-evaluate session-end auto-capture hook").
+
+    To re-enable, add this entry to the "hooks" dict:
+        "SessionEnd": [{
+            "hooks": [{
+                "type": "command",
+                "command": f"{_python_command()} .learning-os/hooks/session_end.py",
+            }]
+        }]
+    """
     config = {
-        "hooks": {
-            "SessionEnd": [
-                {
-                    "hooks": [
-                        {
-                            "type": "command",
-                            "command": f"{_python_command()} .learning-os/hooks/session_end.py",
-                        }
-                    ]
-                }
-            ]
-        }
+        "hooks": {}
     }
     dest.write_text(json.dumps(config, indent=2) + "\n")
     console.print(f"  [green]{action}[/green] .claude/settings.json")
@@ -278,12 +284,6 @@ def _scaffold_user_structure(target: Path, console: Console):
         registry_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(TEMPLATES_DIR / "courses" / "REGISTRY.md", registry_path)
         console.print("  [green]+[/green] courses/REGISTRY.md")
-
-    notes_dir = target / "notes"
-    if not notes_dir.exists():
-        notes_dir.mkdir(parents=True)
-        (notes_dir / ".gitkeep").touch()
-        console.print("  [green]+[/green] notes/")
 
     progress_file = target / ".learning-progress"
     if not progress_file.exists():

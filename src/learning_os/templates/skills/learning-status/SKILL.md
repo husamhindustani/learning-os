@@ -14,34 +14,44 @@ Show an overview of all courses and the user's progress.
 
 ### 1. Read progress data
 
-- Read `.learning-progress` (JSON format) for per-track completion data
+- Read `.learning-progress` (JSON format) for per-track completion and in-progress data
 - Read `courses/REGISTRY.md` for the list of courses
 
-**`.learning-progress` format:**
+The schema:
+
 ```json
 {
   "tracks": {
     "[track-name]": {
       "completed": ["chapter-id-1", "chapter-id-2"],
       "last_saved": "chapter-id-2",
-      "last_date": "YYYY-MM-DD HH:MM"
+      "last_date": "YYYY-MM-DD HH:MM",
+      "in_progress": {
+        "chapter_id": "...",
+        "sessions": [
+          {"title": "...", "topics": [...], "completed": true},
+          {"title": "...", "topics": [...], "completed": false}
+        ]
+      }
     }
   }
 }
 ```
 
-- `completed` — all chapter IDs the user has saved progress for (the authoritative completion list)
-- `last_saved` — most recently saved chapter
-- `last_date` — timestamp of last save
-
+- `completed` — authoritative completion list (chapter IDs)
+- `last_saved` / `last_date` — most recent save
+- `in_progress` — present only when a chapter is mid-way through a user-defined split. Each session has `title`, `topics`, `completed: true|false`. Do not read session-notes.md for plan state — `in_progress` is the source of truth.
 
 ### 2. For each course in REGISTRY.md
 
 - Read `courses/[course-id]/COURSE.yaml`
-- Get the track name from the `track` field (or `progress.track_name` if set)
+- Get the track name from `progress.track_name` (falling back to `track`)
 - Look up `tracks.[track-name]` in the progress data
 - **Progress:** count how many chapter `id` values from `chapters` appear in `completed`
-- **Next up:** the first chapter whose `id` is NOT in `completed`
+- **In progress:** if `in_progress` exists, resolve `chapter_id` → chapter title from `COURSE.yaml.chapters[]`, count sessions with `completed: true` vs total
+- **Next up:**
+  - If `in_progress` exists → next session (first with `completed: false`); display its title.
+  - Else → first chapter whose `id` is NOT in `completed`.
 
 ### 3. Display format
 
@@ -51,6 +61,7 @@ Learning Progress
 
 [Course Title] ([course-id])
   Last completed: [Chapter Title]
+  In progress:    [Chapter Title] ([sessions completed]/[total sessions] sessions)   ← only if applicable
   Progress:       [N]/[total] chapters ([%]%)
   Last saved:     [YYYY-MM-DD HH:MM]
   Next up:        [Next Chapter Title] — say "teach me [course-id] [next-chapter-id]"
@@ -61,6 +72,11 @@ Learning Progress
 ---
 Total: [N] chapters completed across [M] course(s)
 ```
+
+**When `in_progress` is present for the track:**
+- Show the `In progress:` line between `Last completed:` and `Progress:`.
+- Set `Next up:` to point at the next session, e.g. `Session N — [session title] of [Chapter Title] — say "continue [course-id]"`.
+- Do NOT count the in-progress chapter toward the completed total (it isn't done yet).
 
 ### 4. If no progress at all
 

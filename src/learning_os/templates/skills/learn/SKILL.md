@@ -27,10 +27,22 @@ See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach t
 - Check current conversation for course/chapter mentions
 - Look at recently referenced files (e.g., files in `courses/java-evolution/`)
 
-**From progress file:**
-- Read `.learning-progress` (JSON: `tracks.[track-name].last_saved` and `completed`)
-- Find the track with the most recent `last_date`
-- `last_saved` is the last completed chapter — suggest the next chapter not in `completed`
+**From `.learning-progress`:**
+- **Identify the active track.** For bare "continue", pick the `tracks.[track-name]` with the most recent `last_date`. For explicit "continue [course]", look up that course's `progress.track_name` (or `track`) in `COURSE.yaml` and use it.
+- **Check for an in-progress chapter** — if `tracks.[track-name].in_progress` exists, the user is mid-split:
+  - Resume `in_progress.chapter_id`.
+  - The next session is the first entry in `in_progress.sessions[]` with `completed: false`.
+  - Use that session's `topics` list as the teaching agenda — do NOT re-teach sessions with `completed: true`.
+  - Announce: "Resuming **[Chapter Title]** at **Session N — [session title]**. We'll cover: [topics]."
+  - Resolve the course-id from `chapter_id` by scanning `courses/*/COURSE.yaml` for one that contains a matching chapter id; load that COURSE.yaml.
+- **Otherwise**, pick the next chapter: `last_saved` is the last completed; suggest the next chapter not in `completed`.
+
+**Collision check (explicit chapter request):**
+If the user says "learn [course] [chapter-Y]" and `tracks.[track-name].in_progress` exists for a different `chapter_id`, do **not** silently switch. Prompt:
+
+> You're mid-way through **[in_progress chapter title]** — [N of M] sessions complete. Resume that, or abandon and start [chapter-Y]?
+
+If the user picks abandon, delete `in_progress` from `.learning-progress` before continuing. If resume, ignore the explicit request and go to the in-progress chapter.
 
 **If still unclear:**
 - Read `courses/REGISTRY.md` and list available courses
@@ -60,6 +72,31 @@ If chapter has `large_chapter: true` OR has 6+ topics:
 
 Wait for choice before proceeding.
 
+**If the user picks B (break into sessions):**
+
+1. Propose a split (titles + topic-per-session assignment), confirm with the user.
+2. Once confirmed, **write the split to `.learning-progress` immediately, before teaching Session 1.** Update `tracks.[track-name].in_progress`:
+
+   ```json
+   "in_progress": {
+     "chapter_id": "[chapter-id]",
+     "sessions": [
+       {"title": "[Session title]", "topics": ["topic 1", "topic 2"], "completed": false},
+       {"title": "[Session title]", "topics": ["topic 3", "topic 4"], "completed": false}
+     ]
+   }
+   ```
+
+   - Titles are plain strings (the same way you'd reference them in conversation). Identity is by exact title match. If the user doesn't title the sessions, fall back to `Session 1`, `Session 2`, etc. Titles must be unique within the array.
+   - `topics` is the subset of the chapter's topics this session will cover.
+   - All sessions start with `"completed": false`. `save-progress` flips them to `true` as each session finishes.
+
+3. Teach Session 1's topics (the first session in the array). When that session is saved, `save-progress` will flip `completed` and the next "continue" will pick up Session 2.
+
+**If the user picks A:** No `in_progress` block. Teach all topics, save normally as a full chapter.
+
+**If the user picks C:** No `in_progress` block. Teach only the picked topics. This is a one-shot pass, not a multi-session split — if the user later wants the rest, they ask explicitly.
+
 ### 4. Load chapter content
 
 **Priority order:**
@@ -85,6 +122,7 @@ For each topic:
 4. **When to use** — Practical guidance
 5. **Connection** — How it relates to previous/upcoming concepts
 6. **Check** — "Does this make sense?" Wait for confirmation before moving on
+7. **Code artifact (when applicable)** — for code-heavy topics, save a runnable example to `courses/<course-id>/resources/<chapter-id>/` and reference the file path in the response. See PEDAGOGY.md → "Show, don't hand-wave."
 
 ### 6. After teaching all topics — show exercises
 

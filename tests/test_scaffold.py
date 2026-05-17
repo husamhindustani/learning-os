@@ -1,7 +1,6 @@
 """Tests for workspace scaffolding and upgrade logic."""
 
 import json
-import sys
 from pathlib import Path
 
 from learning_os.scaffold import (
@@ -22,7 +21,7 @@ def test_scaffold_creates_workspace_structure(tmp_workspace, quiet_console):
     assert (tmp_workspace / ".learning-os" / "hooks" / "session_end.py").exists()
     assert (tmp_workspace / ".learning-os" / "version").exists()
     assert (tmp_workspace / "courses" / "REGISTRY.md").exists()
-    assert (tmp_workspace / "notes").is_dir()
+    assert not (tmp_workspace / "notes").exists()
     assert (tmp_workspace / ".learning-progress").exists()
 
 
@@ -101,8 +100,8 @@ def test_version_stamp_written(tmp_workspace, quiet_console):
 def test_upgrade_preserves_user_content(tmp_workspace, quiet_console):
     scaffold_workspace(str(tmp_workspace), tool="cursor", with_sample=True, console=quiet_console)
 
-    custom_note = tmp_workspace / "notes" / "session-notes.md"
-    custom_note.write_text("# My notes\n")
+    custom_note = tmp_workspace / "courses" / "sample-course" / "session-notes.md"
+    custom_note.write_text("# Session notes\n\nmy custom entry\n")
     progress = tmp_workspace / ".learning-progress"
     progress.write_text(json.dumps({
         "tracks": {
@@ -116,7 +115,7 @@ def test_upgrade_preserves_user_content(tmp_workspace, quiet_console):
 
     upgrade_workspace(str(tmp_workspace), console=quiet_console)
 
-    assert custom_note.read_text() == "# My notes\n"
+    assert custom_note.read_text() == "# Session notes\n\nmy custom entry\n"
     assert "data-types" in progress.read_text()
     assert (tmp_workspace / "courses" / "sample-course" / "COURSE.yaml").exists()
 
@@ -170,24 +169,6 @@ def test_gitignore_respects_existing_entries(tmp_workspace, quiet_console):
     content = gitignore.read_text()
 
     assert _GITIGNORE_MARKER not in content
-
-
-def test_session_end_hook_uses_sys_executable(tmp_workspace, quiet_console):
-    scaffold_workspace(str(tmp_workspace), tool="cursor", with_sample=False, console=quiet_console)
-
-    hooks_json = tmp_workspace / ".cursor" / "hooks" / "hooks.json"
-    command = json.loads(hooks_json.read_text())["hooks"]["sessionEnd"][0]["command"]
-    assert sys.executable in command
-    assert "session_end.py" in command
-
-
-def test_claude_settings_hook_uses_sys_executable(tmp_workspace, quiet_console):
-    scaffold_workspace(str(tmp_workspace), tool="claude", with_sample=False, console=quiet_console)
-
-    settings = tmp_workspace / ".claude" / "settings.json"
-    command = json.loads(settings.read_text())["hooks"]["SessionEnd"][0]["hooks"][0]["command"]
-    assert sys.executable in command
-    assert "session_end.py" in command
 
 
 def test_scaffold_writes_config(tmp_workspace, quiet_console):

@@ -159,7 +159,6 @@ def test_invalid_yaml(tmp_workspace, quiet_console):
 def test_no_ai_tool_configured(tmp_workspace, quiet_console):
     import shutil
     (tmp_workspace / "courses").mkdir()
-    (tmp_workspace / "notes").mkdir()
     (tmp_workspace / ".learning-progress").touch()
 
     errors, warnings = validate_workspace(str(tmp_workspace))
