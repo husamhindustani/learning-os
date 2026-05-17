@@ -1,7 +1,6 @@
 """Tests for workspace scaffolding and upgrade logic."""
 
 import json
-import sys
 from pathlib import Path
 
 from learning_os.scaffold import (
@@ -170,24 +169,6 @@ def test_gitignore_respects_existing_entries(tmp_workspace, quiet_console):
     content = gitignore.read_text()
 
     assert _GITIGNORE_MARKER not in content
-
-
-def test_session_end_hook_uses_sys_executable(tmp_workspace, quiet_console):
-    scaffold_workspace(str(tmp_workspace), tool="cursor", with_sample=False, console=quiet_console)
-
-    hooks_json = tmp_workspace / ".cursor" / "hooks" / "hooks.json"
-    command = json.loads(hooks_json.read_text())["hooks"]["sessionEnd"][0]["command"]
-    assert sys.executable in command
-    assert "session_end.py" in command
-
-
-def test_claude_settings_hook_uses_sys_executable(tmp_workspace, quiet_console):
-    scaffold_workspace(str(tmp_workspace), tool="claude", with_sample=False, console=quiet_console)
-
-    settings = tmp_workspace / ".claude" / "settings.json"
-    command = json.loads(settings.read_text())["hooks"]["SessionEnd"][0]["hooks"][0]["command"]
-    assert sys.executable in command
-    assert "session_end.py" in command
 
 
 def test_scaffold_writes_config(tmp_workspace, quiet_console):

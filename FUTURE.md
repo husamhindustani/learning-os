@@ -11,6 +11,23 @@ Each entry includes the problem, a proposed direction, and a priority. Items are
 
 ---
 
+## README & repo discovery upgrades
+
+**Priority.** P1.
+
+**Problem.** The package is on PyPI and the GitHub repo is public, but the on-ramp surface is thin. The README has a competent overview but no demo (GIF/video), the one-line pitch is generic ("An AI-native learning workspace scaffold"), and the repo isn't tagged with GitHub topics that would surface it on `github.com/topics/<tag>`. Anyone who lands today has to read the full README before they "get it."
+
+**Proposed direction.**
+- **Demo GIF / 30-sec video** at the top of the README — show "say teach me X → get taught → save progress" end to end. Single biggest discovery upgrade; compounds every other channel (launch posts, ecosystem listings, link previews).
+- **Sharper one-line pitch** — replace "An AI-native learning workspace scaffold" with something verb-led and tool-named, e.g. *"Turn any directory into a structured learning workspace for Claude Code and Cursor."* Helps SEO and gut-grab.
+- **GitHub repo topics** — add `cursor`, `claude-code`, `agent-skills`, `learning`, `spaced-repetition`. Drives `github.com/topics/<tag>` discovery for years.
+- **"Show, don't tell" section** in the README — one fully-worked example excerpt (a chapter of Java Evolution or System Design) so people see the shape without installing.
+- **Document `uvx learning-os init`** as an alternative to `pipx install` for users who haven't installed pipx — works today via PyPI; just needs a README line.
+
+**Why P1.** Distribution is now an active focus. These repo-level changes are all short and they compound every other channel (Claude Code plugin marketplace, Show HN, awesome-lists, agentskills.io listing).
+
+---
+
 ## Spaced retention prompts
 
 **Priority.** P1.
@@ -44,6 +61,35 @@ Each entry includes the problem, a proposed direction, and a priority. Items are
 - A small action verb in conversation closes them: "done with the sharding followup" → mark resolved (or remove).
 
 **Why P1.** Same as retention — real user behavior, data already being written, change is contained. Pair-ships naturally with retention prompts since both surface in `learning-status` / `onboarding`.
+
+---
+
+## Claude Code plugin / marketplace listing
+
+**Priority.** P2.
+
+**Problem.** learning-os ships only via PyPI. Claude Code users who'd benefit from it have no way to discover it from within the tool — they have to know to `pipx install learning-os` from a search engine or referral. The plugin manager at `/plugin` is the natural discovery surface for this audience and we're not on it.
+
+**Proposed direction.** Co-locate a bootstrap plugin in this repo (no separate repo needed):
+
+```
+learning-os/
+├── .claude-plugin/
+│   └── marketplace.json    # NEW: this repo IS its own marketplace
+├── plugin/
+│   ├── .claude-plugin/
+│   │   └── plugin.json     # NEW: plugin manifest
+│   └── skills/
+│       └── learning-os-init/SKILL.md   # NEW: stub explaining `pipx install learning-os && learning-os init`
+└── src/learning_os/        # unchanged — PyPI build untouched
+```
+
+- The plugin is a **bootstrap stub**. It doesn't ship copies of the real skill templates — those live at `src/learning_os/templates/skills/` and get scaffolded into the user's workspace by `learning-os init`. Single source of truth, no drift.
+- The PyPI build (via `[tool.hatch.build.targets.wheel]` in `pyproject.toml`) only packages `src/learning_os/`, so the new `plugin/` and root `.claude-plugin/` directories are invisible to pip users.
+- Install flow for Claude Code users: `/plugin marketplace add husamhindustani/learning-os` then `/plugin install learning-os@learning-os`. The stub SKILL.md walks them through the pipx step + `learning-os init`.
+- Optional follow-up: submit to the official `claude-plugins-official` marketplace at [platform.claude.com/plugins/submit](https://platform.claude.com/plugins/submit) for higher reach. Review takes days/weeks; no SLA. The custom-marketplace path can ship in parallel with no gating.
+
+**Why P2.** Concrete, scoped, low effort (3 new files), and adds a real discovery channel for Claude Code users. Below P1 because the README upgrades compound this channel — sharper pitch + demo GIF improve the plugin listing too. Ship the README upgrades first; then this.
 
 ---
 
@@ -104,18 +150,6 @@ Each entry includes the problem, a proposed direction, and a priority. Items are
 - `chapter-check` review mode reads prior files for the chapter, surfaces "questions you got wrong before" as priority candidates, shows "last time you said X; correct is Y" feedback.
 
 **Why P2.** Powerful when paired with retention prompts (the "review due" item). On its own, valuable but not urgent. The cost is real — a new directory of structured data per chapter — so do it once retention is shipping.
-
----
-
-## Stale hook tests cleanup
-
-**Priority.** P3.
-
-**Problem.** `tests/test_scaffold.py::test_session_end_hook_uses_sys_executable` and `test_claude_settings_hook_uses_sys_executable` have been failing since the disable commit (`aefece5`). They expect a `sessionEnd` / `SessionEnd` key in the hooks config that the scaffold no longer writes (the hook is currently disabled). Every test run requires `--deselect` to stay green.
-
-**Proposed direction.** Either delete both tests (the disabled-hook state is captured implicitly by the scaffold writing `{"hooks": {}}`) or rewrite them as positive assertions that the hooks dict is empty. Five-minute change.
-
-**Why P3.** Pure debt; no behavior impact. Worth picking up alongside any other test-suite change.
 
 ---
 
