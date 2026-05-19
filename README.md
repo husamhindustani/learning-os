@@ -54,7 +54,7 @@ Then open the directory in Cursor (or your AI tool) and start a new chat. The on
 
 ## How it works
 
-Learning OS installs seven **Agent Skills** into your workspace. Skills are discovered automatically by the AI — no slash commands needed.
+Learning OS installs nine **Agent Skills** into your workspace. Skills are discovered automatically by the AI — no slash commands needed.
 
 | Skill | Activates when you say... |
 |---|---|
@@ -64,6 +64,8 @@ Learning OS installs seven **Agent Skills** into your workspace. Skills are disc
 | `save-progress` | "save my progress", "I'm done for today" |
 | `create-course` | "create a course on X", "I want to learn Y" |
 | `create-course-from-book` | "create a course from this book", "create a course from \<slug\>" |
+| `create-course-from-links` | "create a course from \<hub-url\>", "create a course from these links" |
+| `learn-from-link` | "teach me from \<url\>", "explain this article: \<url\>" |
 | `learning-status` | "where am I?", "show my progress", "what's next?" |
 
 ### The workflow
@@ -184,6 +186,16 @@ This extracts the table of contents and chapter text into `books/<slug>/`. Then 
 During learning, the agent teaches from the book's content in its own words, supplemented with its own knowledge. Quizzes draw from both the book and the teaching session.
 
 > Requires the `[book]` extra — see **Install**.
+
+### Courses from web articles
+
+Two flows depending on intent:
+
+**Curated collection** — say *"create a course from https://dora.dev/capabilities/"* or paste a list of URLs. The agent fetches each article, lets you confirm the selection, proposes a chapter mapping, and snapshots the content to `courses/<id>/sources/` so teaching survives link rot and offline sessions.
+
+**Single article** — say *"teach me from <url>"* and the agent reads the article and teaches it interactively in one session. No course scaffold, no progress tracking — optionally saves takeaways to `reading-notes/`. Best for one-off reads.
+
+Both flows work with any agent that has a web-fetch tool (Claude Code, Cursor, etc.). If no web tool is available, the skills fall back to asking you to paste the content.
 
 ### Sharing courses
 

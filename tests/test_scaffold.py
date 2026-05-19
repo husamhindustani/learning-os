@@ -199,7 +199,8 @@ def test_scaffold_creates_all_skills(tmp_workspace, quiet_console):
 
     expected_skills = [
         "chapter-check", "create-course", "create-course-from-book",
-        "learn", "learning-status", "onboarding", "save-progress",
+        "create-course-from-links", "learn", "learn-from-link",
+        "learning-status", "onboarding", "save-progress",
     ]
     skills_dir = tmp_workspace / ".cursor" / "skills"
     actual = sorted(d.name for d in skills_dir.iterdir() if d.is_dir())

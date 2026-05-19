@@ -106,18 +106,36 @@ next_course: other-course-id
 - Also triggered automatically if the topics list has 6+ items (even without this flag)
 
 ### `source` (course-level)
-- Present only for courses created from a book via `create-course-from-book`
-- `source.type` — always `"book"` for now
+- Present for courses created from external sources (a book or web articles)
+- `source.type` — `"book"` or `"articles"`
+
+**For `type: book`** (created via `create-course-from-book`):
 - `source.title` — the book's title
 - `source.authors` — list of author names
 - `source.file` — path to the original PDF/EPUB (relative to workspace root)
 - `source.outline` — path to the parsed `book-outline.yaml`
 
+**For `type: articles`** (created via `create-course-from-links`):
+- `source.hub_url` — optional; the index/hub URL if articles came from one
+- `source.article_count` — total number of articles snapshotted
+
 ### `chapters[].source` (chapter-level)
-- Maps this course chapter to sections of the source book
+
+Maps this course chapter to its source material. Shape differs by source type.
+
+**Book-sourced chapter:**
 - `book_chapters` — list of chapter IDs from `book-outline.yaml` that this course chapter covers
 - `content_files` — list of extracted markdown files the `learn` skill reads when teaching this chapter
 - `supplementary_notes` — optional note about what the AI should teach beyond the book's content (outdated material, missing topics, etc.)
+
+**Article-sourced chapter:**
+- `articles` — list of objects, each with:
+  - `url` — original article URL (preserved for citation)
+  - `title` — article title
+  - `content_file` — path to the snapshotted markdown under `courses/<id>/sources/NN-<slug>.md`
+- `supplementary_notes` — optional, same meaning as for book chapters
+
+The `learn` skill reads `content_file` paths the same way for both types — the source-type field tells it how to attribute material when teaching.
 
 ### `progress.section_mapping`
 - Maps each chapter `id` to a display name stored in `.learning-progress` by the `save-progress` skill

@@ -4,7 +4,7 @@ This is a Learning OS workspace — an AI-native learning environment for any to
 
 ## What this workspace is
 
-Learning OS provides a structured, self-improving learning system. You have seven Agent Skills available that handle all learning interactions:
+Learning OS provides a structured, self-improving learning system. You have nine Agent Skills available that handle all learning interactions:
 
 - **onboarding** — activates automatically on first use or when no courses exist
 - **learn** — teaches chapter content one concept at a time
@@ -12,6 +12,8 @@ Learning OS provides a structured, self-improving learning system. You have seve
 - **save-progress** — saves session notes and updates progress tracking
 - **create-course** — scaffolds a new course for any topic
 - **create-course-from-book** — creates a course from an imported PDF/EPUB book
+- **create-course-from-links** — creates a course from a hub URL or a list of web articles
+- **learn-from-link** — teaches a single article interactively, no course scaffold
 - **learning-status** — shows progress across all courses
 
 ## How to behave
@@ -32,11 +34,14 @@ courses/              ← user's learning content (never modify without instruct
     COURSE.yaml       ← course definition (schema in learn skill references)
     LEARNING_PLAN.md
     EXERCISES.md
+    sources/          ← snapshotted article markdown (article-sourced courses only)
     session-notes.md  ← per-course learning journal (append-only, newest entry at top)
 books/                ← imported books (created by learning-os add-book)
   [slug]/
     book-outline.yaml ← extracted TOC and chapter list
     book-content/     ← chapter text as markdown (read by learn skill)
+reading-notes/        ← created lazily by learn-from-link skill
+  YYYY-MM-DD-<slug>.md  ← one-off article notes (key takeaways, questions)
 .learning-progress    ← JSON progress file (per-track completed chapters + optional in_progress session split)
 .learning-os/
   hooks/              ← shared automation scripts (session breadcrumb only)

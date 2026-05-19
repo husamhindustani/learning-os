@@ -45,7 +45,10 @@ Say something like:
 > - "I'm studying React hooks"
 > - "Help me learn Spanish vocabulary"
 >
-> You can also create a course from a book — run `learning-os add-book <file.pdf>` in the terminal, then say "create a course from \<slug\>".
+> You can also:
+> - Create a course from a book — run `learning-os add-book <file.pdf>` in the terminal, then say "create a course from \<slug\>".
+> - Create a course from web articles — say "create a course from \<hub-url\>" (e.g. a doc index or reading list) or paste a list of URLs.
+> - Read a single article interactively — say "teach me from \<url\>" — no course scaffold, just a guided read.
 
 Wait for the user's response, then hand off to the `create-course` skill.
 
