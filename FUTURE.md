@@ -93,6 +93,78 @@ learning-os/
 
 ---
 
+## Cursor plugin / marketplace listing
+
+**Priority.** P2.
+
+**Problem.** Cursor shipped a first-party **Cursor Marketplace** in v2.5 (Feb 2026, [cursor.com/marketplace](https://cursor.com/marketplace)) that bundles Skills, Rules, Hooks, Subagents, Commands, and MCP servers as installable plugins — a direct match for what learning-os scaffolds. Today, Cursor users who'd benefit have no in-editor discovery path; they have to know to `pipx install learning-os` from outside.
+
+**Proposed direction.** Two stages, sequenced by effort.
+
+**Stage 1 — Community directories** (low-effort, no review):
+- PR the seven skills onto [github.com/spencerpauly/awesome-cursor-skills](https://github.com/spencerpauly/awesome-cursor-skills)
+- PR the `learning-mode` rule onto [cursor.directory](https://cursor.directory) (powered by `github.com/pontusab/directories`), [awesome-cursorrules](https://github.com/PatrickJS/awesome-cursorrules), and [dotcursorrules.dev](https://www.dotcursorrules.dev/)
+- One-shot work; drives long-tail traffic for years
+
+**Stage 2 — Official Marketplace** (higher reach, higher effort):
+- Co-locate a Cursor plugin in this repo, mirroring the Claude Code plugin structure:
+  ```
+  learning-os/
+  ├── .cursor-plugin/
+  │   └── plugin.json    # NEW: Cursor plugin manifest (name is the only documented required field)
+  ├── cursor-plugin/     # NEW: bundled skills + rule + hook config
+  │   └── ...
+  └── ...                # PyPI build untouched
+  ```
+- Submit at [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish). Reference docs: [cursor.com/docs/plugins](https://cursor.com/docs/plugins), examples in `github.com/cursor/plugins`.
+- **Constraints**: must be open source (already MIT ✅); manually reviewed by Cursor staff; early reports on the forum mention friction for individual (non-company) submitters. Timing uncertain.
+- The plugin can either ship a copy of the skill templates (risks drift with the CLI's source-of-truth at `src/learning_os/templates/skills/`) or be a thin bootstrap pointing at `pipx install learning-os`. Decide closer to publish.
+
+**Awareness channels** specific to Cursor (use after either stage):
+- [forum.cursor.com](https://forum.cursor.com) — "Built for Cursor" subforum, the typical announcement venue
+- Cursor changelog and the [new-plugins blog series](https://cursor.com/blog/new-plugins)
+- Cursor Discord (linked from cursor.com)
+- Twitter/X: `@cursor_ai`, plus team handles `@amanrsanger` and `@sualehasif996`
+
+**Why P2.** Concrete, scoped, real discovery channel — and Cursor's marketplace primitives map almost 1:1 to what learning-os already produces. Stage 1 is borderline P1 (a few PRs, no review), but bundling with Stage 2 keeps the ecosystem story in one place. Below the README P1 because the marketplace listing and forum post both benefit from a strong demo GIF.
+
+**Caveat.** Plugin schema beyond `name` is not fully documented as of mid-2026; expect to learn details from the docs/examples when implementing. The marketplace itself is ~3 months old.
+
+---
+
+## Awareness & external listings
+
+**Priority.** P2.
+
+**Problem.** Even with a sharp README and ecosystem-specific plugin listings (Claude Code, Cursor), the project still needs first-contact moments — places where people who don't already know learning-os exists can stumble onto it. Today the only paths are PyPI search (near-zero traffic) and direct GitHub URL.
+
+**Proposed direction.** Sequence after the P1 README work lands (demo GIF + sharper pitch), since most of these channels benefit from a strong hero asset:
+
+- **agentskills.io listing.** The README already cites Agent Skills as the open standard. If they maintain a directory or examples page, get listed; if not, propose one.
+- **Show HN.** Tuesday/Wednesday US morning. Headline emphasizes the verb-led pitch and the demo GIF — "Show HN: Turn any directory into a structured learning workspace for Claude Code and Cursor."
+- **Subreddit launches.** r/ClaudeAI, r/cursor, r/learnprogramming — same demo, sized per audience.
+- **Generic awesome-list PRs.** `awesome-claude-code`, `awesome-ai-agents`. (Cursor-specific awesome lists are covered in the "Cursor plugin / marketplace listing" item.) Long-tail traffic, no maintenance after the PR merges.
+- **Blog post.** Walk through real usage — the System Design notes are gold material (real learning, real artifacts, real "I asked X and got Y"). Hosted anywhere (own blog, dev.to, Medium); cross-post.
+
+**Why P2.** Real impact, but most channels are one-shot pushes that fire once and benefit from prep (the demo, the hero pitch). Don't burn the launch before the README is sharp.
+
+---
+
+## Community course registry
+
+**Priority.** P3.
+
+**Problem.** `learning-os export` / `import` already work — courses are portable as `.zip` files. There's no discovery surface: if someone makes a great `system-design-vol-2` or `rust-fundamentals` course, no one else can find it.
+
+**Proposed direction.**
+- A single GitHub repo (e.g. `learning-os-courses`) acting as a community catalog. Each accepted course lives in a folder with a manifest + a link to the source zip.
+- A lightweight PR workflow: PR adds a folder, maintainer reviews, merges. No infra beyond GitHub.
+- Optional CLI later: `learning-os install <course-name>` resolves against the catalog, downloads the zip, runs the existing import flow.
+
+**Why P3.** Speculative. The export/import primitives exist, so the gap is real, but there's no evidence of demand yet — the user is the only known author. Build only if multiple people start making courses; otherwise the catalog has nothing to catalog.
+
+---
+
 ## chapter-check session-level review
 
 **Priority.** P2.
