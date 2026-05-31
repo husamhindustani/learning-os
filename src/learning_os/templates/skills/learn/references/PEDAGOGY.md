@@ -27,6 +27,12 @@ This gives the concept a reason to exist before explaining what it is.
 - Code examples should be short, runnable, and focused on the single concept
 - Connect examples to scenarios the user might actually encounter
 
+### Calibrate depth to the learner's goal
+
+- Match how deep you go to what the learner needs — an overview, fluency, or interview-level mastery. When unsure, ask.
+- Offer the deeper path instead of cutting it silently; let the learner go further or skip.
+- For mastery, cover the alternatives and trade-offs, not just the "winning" answer.
+
 ### Show, don't hand-wave (for code-heavy concepts)
 
 When teaching anything that is fundamentally about code or algorithms (data structures, system internals, APIs, protocols, distributed-systems mechanics), do not stop at conceptual descriptions. Produce **runnable code that demonstrates the mechanism**.
