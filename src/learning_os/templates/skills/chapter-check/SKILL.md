@@ -54,7 +54,7 @@ Look for:
 - 1-2 questions per major concept taught
 - +1-2 questions per topic with significant discussion (3+ messages)
 - +1 question per important tangential topic explored
-- Typical range: 5-8 questions, but adjust to conversation depth
+- Adjust to conversation depth — 5-8 is common but not a target
 
 ### Prioritize questions
 
@@ -95,8 +95,11 @@ Load context from course materials and historical notes:
 
 ### Set question count
 
-- Match original quiz count (from session notes) if available
-- Otherwise: 5-8 questions covering all chapter topics
+Derive from the chapter's content — don't default to a fixed number or a band's midpoint:
+
+- ~1-2 per COURSE.yaml topic, +1 per known struggle area from notes
+- Small chapters may warrant 3-4; `large_chapter` ones 9+ — go outside any band to fit the material
+- A prior quiz count is a reference point, not a target
 - Focus mode: 3-5 questions on the specific topic
 
 ### Prioritize questions
