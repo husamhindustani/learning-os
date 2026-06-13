@@ -1,18 +1,25 @@
 ---
 name: chapter-check
 description: >-
-  Quiz the user on a chapter to reinforce learning. Use when the user says
-  'quiz me', 'test me', 'check my understanding', 'chapter check', or has
-  just finished learning a chapter and wants to verify retention. Also use
-  when user says 'review [chapter]' or 'check [chapter-id]' to review a
-  past chapter.
+  Reinforce learning on a chapter via quiz (recall) and/or hands-on practice
+  (application). Use when the user says 'quiz me', 'test me', 'check my
+  understanding', 'chapter check', 'practice [chapter]', or has just finished
+  learning a chapter and wants to verify retention. Also use when user says
+  'review [chapter]' or 'check [chapter-id]' to review a past chapter — offer
+  quiz, practice, or both.
 ---
 
 # Chapter Check
 
-Quiz the user to reinforce learning — either from the current session or as a structured review of a past chapter.
+Reinforce learning — either from the current session or as a structured review of a past chapter.
 
-See [references/QUIZ_PATTERNS.md](references/QUIZ_PATTERNS.md) for question type patterns and examples.
+**Review is multi-modal.** Recall and application test different things, and both matter:
+- **Recall** — "can you retrieve and explain it?" → tested by a **quiz**.
+- **Application** — "can you actually *do* it?" → tested by **practice** (performing the exercises/demos and observing real behavior).
+
+For procedural/skill material (programming, infra, CLIs, tools, APIs) application is the truer test of mastery and surfaces gaps recall hides. Don't collapse review to quiz-only by default — pick the modality that fits the chapter and the learner.
+
+See [references/QUIZ_PATTERNS.md](references/QUIZ_PATTERNS.md) for quiz question patterns and [references/PRACTICE_PATTERNS.md](references/PRACTICE_PATTERNS.md) for how to run a hands-on practice review.
 
 ## Step 1: Determine mode
 
@@ -20,16 +27,18 @@ See [references/QUIZ_PATTERNS.md](references/QUIZ_PATTERNS.md) for question type
 → **Current Session Mode** — quiz based on what was discussed this session
 
 **User specifies a chapter (e.g., "quiz me on java8", "review streams-deep-dive"):**
-→ **Review Mode** — quiz based on course materials and historical notes
+→ **Review Mode** — review a past chapter from course materials and historical notes. Choose a modality (quiz / practice / both — see below).
 
 **User specifies a chapter AND a topic (e.g., "check java8 lambdas"):**
-→ **Focus Mode** — quiz on that specific topic only
+→ **Focus Mode** — review that specific topic only. Quiz by default; if the user wants practice, follow [references/PRACTICE_PATTERNS.md](references/PRACTICE_PATTERNS.md) scoped to just the exercises/demos touching that topic.
 
 ---
 
 ## Current Session Mode — Deep Contextual Quiz
 
 This is the primary mode. It creates a quiz that reflects the actual conversation, not just the chapter outline.
+
+(If the user instead wants to *apply* what was just taught — e.g. "let me practice this" — follow [references/PRACTICE_PATTERNS.md](references/PRACTICE_PATTERNS.md) using the session context and the chapter's exercises, rather than quizzing.)
 
 ### Read the conversation
 
@@ -45,7 +54,7 @@ Look for:
 - 1-2 questions per major concept taught
 - +1-2 questions per topic with significant discussion (3+ messages)
 - +1 question per important tangential topic explored
-- Typical range: 5-8 questions, but adjust to conversation depth
+- Adjust to conversation depth — 5-8 is common but not a target
 
 ### Prioritize questions
 
@@ -63,7 +72,14 @@ Reference the session when relevant:
 
 ---
 
-## Review Mode — Structured Materials Quiz
+## Review Mode — Structured Review of a Past Chapter
+
+**First, choose the modality.** Ask: "Review **[chapter]** as a **quiz** (recall), **hands-on practice** (do the exercises/demos), or **both**?" Default suggestion: *both* for `programming`/`mixed` courses, *quiz* for `conceptual` ones (per COURSE.yaml `type`). If the user already said how (e.g. "practice [chapter]"), skip the question.
+
+- **Practice** (or the practice half of **both**) → follow [references/PRACTICE_PATTERNS.md](references/PRACTICE_PATTERNS.md).
+- **Quiz** (or the quiz half of **both**) → continue below. For **both**, run the quiz first, then practice.
+
+### Load context
 
 Load context from course materials and historical notes:
 
@@ -75,11 +91,15 @@ Load context from course materials and historical notes:
    - What doubts they originally had
    - Original quiz score (if any)
    - Topics discussed in depth
+   - Prior `(quiz: X/Y)` / `(practice: …)` tags — don't repeat the same drills unless the user asks
 
 ### Set question count
 
-- Match original quiz count (from session notes) if available
-- Otherwise: 5-8 questions covering all chapter topics
+Derive from the chapter's content — don't default to a fixed number or a band's midpoint:
+
+- ~1-2 per COURSE.yaml topic, +1 per known struggle area from notes
+- Small chapters may warrant 3-4; `large_chapter` ones 9+ — go outside any band to fit the material
+- A prior quiz count is a reference point, not a target
 - Focus mode: 3-5 questions on the specific topic
 
 ### Prioritize questions
@@ -105,6 +125,8 @@ Strong areas: [topics]
 ---
 
 ## Present questions one at a time
+
+Applies to the **quiz** paths only (Current Session, Review quiz, Focus quiz). A practice review uses `PRACTICE_PATTERNS.md` instead, not this section.
 
 - Show one question
 - Wait for answer
@@ -133,7 +155,9 @@ Review recommended: [topics with wrong answers]
 [If clean]: Great work! Say "save my progress" when ready.
 ```
 
-**Review mode:** (see above)
+**Review mode (quiz):** see the "Show comparison at end" block above.
+
+**Review mode (practice):** see [references/PRACTICE_PATTERNS.md](references/PRACTICE_PATTERNS.md) → "Wrap-up". For **both**, report the two axes together (Recall: X/Y; Application: what was done) and call out any gap that appears in one but not the other.
 
 **Focus mode:**
 ```

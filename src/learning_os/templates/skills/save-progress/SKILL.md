@@ -3,8 +3,8 @@ name: save-progress
 description: >-
   Save learning progress and write session notes. Use when the user says
   'save my progress', 'save progress', 'I am done for today', 'wrap up',
-  'end session', or has just finished a chapter and quiz and wants to record
-  their work.
+  'end session', or has just finished a chapter or a review (quiz, practice,
+  or both) and wants to record their work.
 ---
 
 # Save Progress
@@ -157,7 +157,7 @@ Append a new entry to the **top** of `courses/[course-id]/session-notes.md` (cre
 ```markdown
 ## YYYY-MM-DD
 
-**Progress:** [Course Title] — [Chapter Title][optional: (Session N of M) if mid-split] [optional: (quiz: X/Y)]
+**Progress:** [Course Title] — [Chapter Title][optional: (Session N of M) if mid-split] [optional review tags: (quiz: X/Y), (practice: <what was run/done>)]
 
 [optional: Chapter session plan block — see below]
 
@@ -165,6 +165,8 @@ Append a new entry to the **top** of `courses/[course-id]/session-notes.md` (cre
 - [1-2 sentences covering main topics, exercises completed, demos run]
 - **Other learning:** [Tangential topics, doubts addressed, clarifications, tools discussed. "None" if nothing.]
 ```
+
+**Review tags.** A `chapter-check` review can be a quiz, hands-on practice, or both. Tag whichever ran: `(quiz: X/Y)` for recall, `(practice: <what was run/observed>)` for application (a note, not a score) — so the next review sees what's been *done*, not just scored.
 
 **Chapter session plan block** — include only when `in_progress` exists for this chapter (i.e. Path B was taken, or Path A on the final session of a previously-split chapter). Derive it from `in_progress.sessions[]`:
 - ✅ for sessions with `completed: true`
@@ -193,6 +195,7 @@ The block is for human readers of the journal. **It is derived from JSON, never 
 - Topics taught, exercises completed, demos run
 - Doubts the user had and how they were resolved
 - Quiz results (score, notable right/wrong answers)
+- Practice results (what was run/built/broken, what the doing revealed — e.g. an error or behavior a quiz wouldn't surface)
 - Tangential topics explored
 - Workflow changes
 
@@ -208,4 +211,4 @@ Do not ask for confirmation when context is clear. The only required confirmatio
 
 - `.learning-progress` is authoritative for chapter and session state; the journal is narrative
 - The plan block in notes is derived display — never trust it over `in_progress`
-- Capture doubts and clarifications in the journal — they feed `chapter-check` review mode
+- Capture doubts, clarifications, and practice outcomes in the journal — they feed `chapter-check` review mode (both the quiz and practice paths)

@@ -151,6 +151,6 @@ Tell the user:
 
 > **Now:** Run the demos, complete the exercises above, ask questions freely.
 >
-> **When done:** Say "quiz me" to test your understanding, or "save my progress" to record this session.
+> **When done:** Say "quiz me" to test recall, "practice [chapter]" to be guided through the exercises hands-on, or "save my progress" to record this session.
 >
 > [If partial chapter:] "When you're ready for [remaining topics], just say 'continue [course] [chapter]'."
