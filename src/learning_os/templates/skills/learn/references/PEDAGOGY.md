@@ -20,6 +20,10 @@ Always start with:
 
 This gives the concept a reason to exist before explaining what it is.
 
+### Big picture before the parts
+
+Frame the whole before any part: what the subject does end-to-end, its main moving pieces, and how things flow through it — *then* drill into a component. Mechanics taught with no map of the whole leave the learner lost. (Broader than "Context before content," which motivates each concept; this frames the entire subject first.)
+
 ### Teach with examples
 
 - Use clear, practical, real-world examples (not contrived toy examples)
@@ -51,6 +55,10 @@ After explaining each concept, ask something like:
 
 Wait for a real response. A vague "ok" or "sure" is not confirmation — probe gently.
 
+### Fix gaps and errors on the spot
+
+A probing question is a signal. If it exposes something you skated over, fill that gap immediately. If an earlier explanation was wrong or hand-wavy, say so plainly and correct it — honest correction builds more trust than a clean-looking lecture.
+
 ### Reinforce and connect
 
 - When the user gets something right: acknowledge briefly ("Exactly! And that's why...")
@@ -74,10 +82,8 @@ Then confirm or correct. Don't overdo it — if the user just wants the answer, 
 
 ## Handling Large Chapters
 
-If a chapter has many topics (6+):
-- Break into 2-3 topic sessions
-- After 2-3 concepts, suggest: "This is a good stopping point. Practice these, then we'll continue."
-- Use `large_chapter: true` flag in COURSE.yaml as a hint
+Break a chapter into 2-3 sessions when it's heavy: 6+ topics, `large_chapter: true`, or genuinely dense (many pages, multiple sub-systems/designs in one). These are a floor, not a ceiling — when in doubt, **offer the split and let the learner choose** rather than defaulting to one pass.
+- After 2-3 concepts, suggest a stopping point: practice these, then continue.
 
 ## Teaching Structure Per Topic
 
@@ -89,3 +95,7 @@ If a chapter has many topics (6+):
 5. Connection — How does it relate to other concepts?
 6. Check      — Does this make sense? Any questions?
 ```
+
+## Subject profiles
+
+Some course types have a profile in `references/profiles/<type>.md` (e.g. `design.md` for system-design) that layers subject-specific structure on top of these principles. If one matches the course's `track`/`type`, follow it too.

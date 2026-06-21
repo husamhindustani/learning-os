@@ -15,6 +15,7 @@ Start or continue a learning session for any course chapter.
 
 See [references/COURSE_SCHEMA.md](references/COURSE_SCHEMA.md) for how to read COURSE.yaml files.
 See [references/PEDAGOGY.md](references/PEDAGOGY.md) for the teaching approach to follow.
+See [references/profiles/](references/profiles/) — if one matches the course's `track`/`type` (e.g. `design.md` for system-design), load it; it layers subject-specific structure on top of PEDAGOGY.
 
 ### 1. Determine course and chapter
 
